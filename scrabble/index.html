@@ -11,25 +11,33 @@
 <body>
 <div id="gameBoard">
   <!-- id position:function  0=location of tile b = board r= rack 1= Row Identifier 3=Column Identifier 5=Lock status u unlocked l locked -->
-  <div class = "tile" id="b1_1_u"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b1_2_u"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b1_3_u"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b2_1_u"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b2_2_u"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b2_3_u"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b3_1_u"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b3_2_u"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b3_3_u"><div class = "tileValue"></div></div>
+  <div class = "location" id="b1_1_u"><div class = "tileValue"></div></div>
+  <div class = "location" id="b1_2_u"><div class = "tileValue"></div></div>
+  <div class = "location" id="b1_3_u"><div class = "tileValue"></div></div>
+  <div class = "location" id="b2_1_u"><div class = "tileValue"></div></div>
+  <div class = "location" id="b2_2_u"><div class = "tileValue"></div></div>
+  <div class = "location" id="b2_3_u"><div class = "tileValue"></div></div>
+  <div class = "location" id="b3_1_u"><div class = "tileValue"></div></div>
+  <div class = "location" id="b3_2_u"><div class = "tileValue"></div></div>
+  <div class = "location" id="b3_3_u"><div class = "tileValue"></div></div>
 </div>
 <div class= 'rack' id = 'player1'>
-  <div class = "tile .wobbleLeft" id = "r1_1_u">A</div>
-  <div class = "tile" id = "r1_2_u">B</div>
-  <div class = "tile" id = "r1_3_u">C</div>
-  <div class = "tile" id = "r1_4_u">D</div>
-  <div class = "tile" id = "r1_5_u">E</div>
-  <div class = "tile" id = "r1_6_u">F</div>
-  <div class = "tile" id = "r1_7_u">G</div>
+  <div class = "location" id = "r1_1_u"><div class = "tileValue">A</div><div class="score">1</div></div>
+  <div class = "location" id = "r1_2_u"><div class = "tileValue">B</div><div class="score">1</div></div>
+  <div class = "location" id = "r1_3_u"><div class = "tileValue">C</div><div class="score">1</div></div>
+  <div class = "location" id = "r1_4_u"><div class = "tileValue">D</div><div class="score">1</div></div>
+  <div class = "location" id = "r1_5_u"><div class = "tileValue">E</div><div class="score">1</div></div>
+  <div class = "location" id = "r1_6_u"><div class = "tileValue">F</div><div class="score">1</div></div>
+  <div class = "location" id = "r1_7_u"><div class = "tileValue">G</div><div class="score">1</div></div>
 </div>
+<div class="gliding" id ="g1"><div class = "tileValue"></div></div>
+<div class="gliding" id ="g1"><div class = "tileValue"></div></div>
+<div class="gliding" id ="g1"><div class = "tileValue"></div></div>
+<div class="gliding" id ="g1"><div class = "tileValue"></div></div>
+<div class="gliding" id ="g1"><div class = "tileValue"></div></div>
+<div class="gliding" id ="g1"><div class = "tileValue"></div></div>
+<div class="gliding" id ="g1"><div class = "tileValue"></div></div>
+
 <button id='submitWord'>Submit Word</button>
 
 </body>

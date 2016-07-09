@@ -22,7 +22,7 @@
   margin:0 auto;
 }
 
-.tile{
+.location{
   border:2px solid #89836E;
   height:65px;
   width:100px;
@@ -34,20 +34,16 @@
 
 
 }
-
-.wobbleRight
-{
-    -ms-transform: rotate(3deg); /* IE 9 */
-    -webkit-transform: rotate(3deg); /* Chrome, Safari, Opera */
-    transform: rotate(3deg); /* Standard syntax */
+.score{
+  float:right;
+  height:15px;
+  width:15px;
+  font-size: 12px;
+  font-weight: 700;
+  color:#3DB29A;
 }
 
-.wobbleLeft
-{
-    -ms-transform: rotate(-3deg); /* IE 9 */
-    -webkit-transform: rotate(-3deg); /* Chrome, Safari, Opera */
-    transform: rotate(-3deg); /* Standard syntax */
-}
+
 
 
 
