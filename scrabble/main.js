@@ -8,6 +8,7 @@ $(function(){
 //     alert('I can talk'); // Synthesis support. Make your web apps talk!
 // }
 var fullLetterStack = ['e','e','e','e','e','e','e','e','e','e','e','e','a','a','a','a','a','a','a','a','a','i','i','i','i','i','i','i','i','i','i','o','o','o','o','o','o','o','o','n','n','n','n','n','n','n','r','r','r','r','r','r','t','t','t','t','t','t','t','l','l','l','l','s','s','s','s','u','u','u','u','d','d','d','d','g','g','g','b','b','c','c','m','m','p','p','f','f','h','h','v','v','w','w','y','y','k','j','x','q','z','@','@'];
+var lettersRemainingInStack=100;
 var letterRack="";
 var playerID=0;
 var roundNumber=0;
@@ -260,10 +261,13 @@ function pickLetters(){
 
    for(var i=0; i<7; i++)
     {
-        randomIndex= (Math.ceil(Math.random()*100));
+        randomIndex= (Math.ceil(Math.random()*lettersRemainingInStack));
         letterRack=letterRack+fullLetterStack[randomIndex];
+       fullLetterStack.splice(fullLetterStack.indexOf(fullLetterStack[i]), 1);
+       lettersRemainingInStack--;
     };
     alert(letterRack);
+    alert(fullLetterStack);
 }
 
 function dropTileOnSquare(){
