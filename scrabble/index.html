@@ -10,25 +10,27 @@
 </head>
 <body>
 <div id="gameBoard">
-  <div class = "tile" id="b1_1"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b1_2"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b1_3"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b2_1"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b2_2"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b2_3"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b3_1"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b3_2"><div class = "tileValue"></div></div>
-  <div class = "tile" id="b3_3"><div class = "tileValue"></div></div>
+  <!-- id position:function  0=location of tile b = board r= rack 1= Row Identifier 3=Column Identifier 5=Lock status u unlocked l locked -->
+  <div class = "tile" id="b1_1_u"><div class = "tileValue"></div></div>
+  <div class = "tile" id="b1_2_u"><div class = "tileValue"></div></div>
+  <div class = "tile" id="b1_3_u"><div class = "tileValue"></div></div>
+  <div class = "tile" id="b2_1_u"><div class = "tileValue"></div></div>
+  <div class = "tile" id="b2_2_u"><div class = "tileValue"></div></div>
+  <div class = "tile" id="b2_3_u"><div class = "tileValue"></div></div>
+  <div class = "tile" id="b3_1_u"><div class = "tileValue"></div></div>
+  <div class = "tile" id="b3_2_u"><div class = "tileValue"></div></div>
+  <div class = "tile" id="b3_3_u"><div class = "tileValue"></div></div>
 </div>
 <div class= 'rack' id = 'player1'>
-  <div class = 'tile' id = 'r1_1'>A</div>
-  <div class = 'tile' id = 'r1_2'>B</div>
-  <div class = 'tile' id = 'r1_3'>C</div>
-  <div class = 'tile' id = 'r1_4'>D</div>
-  <div class = 'tile' id = 'r1_5'>E</div>
-  <div class = 'tile' id = 'r1_6'>F</div>
-  <div class = 'tile' id = 'r1_7'>G</div>
+  <div class = "tile .wobbleLeft" id = "r1_1_u">A</div>
+  <div class = "tile" id = "r1_2_u">B</div>
+  <div class = "tile" id = "r1_3_u">C</div>
+  <div class = "tile" id = "r1_4_u">D</div>
+  <div class = "tile" id = "r1_5_u">E</div>
+  <div class = "tile" id = "r1_6_u">F</div>
+  <div class = "tile" id = "r1_7_u">G</div>
 </div>
 <button id='submitWord'>Submit Word</button>
+
 </body>
 </html>
