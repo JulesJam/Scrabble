@@ -1,13 +1,13 @@
 #gameBoard{
-  height:312px;
-  width:312px;
+  height:780px;
+  width:780px;
   margin:100px auto;
   background-color: rgba(255,0,0,.5);
 }
 .square{
-  border:2px solid #89836E;
-  height:100px;
-  width:100px;
+  border:1px solid #89836E;
+  height:50px;
+  width:50px;
   float:left;
   text-align: center;
 
@@ -16,21 +16,21 @@
 
 .rack{
   border:1px solid black;
-  width:728px;
-  height:104px;
+  width:364px;
+  height:54px;
   background-color: rgba(255,0,0,.5);
   margin:0 auto;
 }
 
 .location{
-  border:2px solid #89836E;
-  height:65px;
-  width:100px;
+  border:1px solid #89836E;
+  height:35px;
+  width:50px;
   float:left;
   text-align: center;
   font-family: 'Lato', sans-serif;
-  font-size: 35px;
-  padding-top:35px;
+  font-size: 15px;
+  padding-top:15px;
 
 
 }

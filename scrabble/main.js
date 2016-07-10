@@ -8,6 +8,11 @@ $(function(){
 //     alert('I can talk'); // Synthesis support. Make your web apps talk!
 // }
 var fullLetterStack = ['e','e','e','e','e','e','e','e','e','e','e','e','a','a','a','a','a','a','a','a','a','i','i','i','i','i','i','i','i','i','i','o','o','o','o','o','o','o','o','n','n','n','n','n','n','n','r','r','r','r','r','r','t','t','t','t','t','t','t','l','l','l','l','s','s','s','s','u','u','u','u','d','d','d','d','g','g','g','b','b','c','c','m','m','p','p','f','f','h','h','v','v','w','w','y','y','k','j','x','q','z','@','@'];
+
+var boardMap = [[1,1,'3w'],[1,4,'2l'],[1,8,'3w'],[1,12,'2l'],[1,15,'3w'],[2,2 ,'2w'],[2,6 ,'3l'],[2,10,'3l'],[2,14,'2w'],[3,3,'2w'],[3,7,'2l'],[3,9,'2l'],[3,13,'2w'],[4,4,'2w'],[4,8,'2l'],[4,12,'2w'],[5,5,'2w'],[5,11,'2w'],[6,6,'3l'],[6,10,'3l'],[7,7,'2l'],[7,9,'2l'],[8,8,''],[9,7,'2l'],[9,9,'2l'],[10,6,'3l'],[10,10,'3l'],[11,5,'2w'],[11,11,'2w'],[12,4,'2w'],[12,8,'2l'],[12,12,'2w'],[13,3,'2w'],[13,7,'2l'],[13,9,'2l'],[13,13,'2w'],[14,2,'2w'],[14,6,'3l'],[14,10,'3l'],[14,14,'2w'],[15,1,'3w'],[15,4,'2l'],[15,8,'3w'],[15,12,'2l'],[15,15,'3w']]
+
+var lettersInPlay = ['e','e','e','e','e','e','e','e','e','e','e','e','a','a','a','a','a','a','a','a','a','i','i','i','i','i','i','i','i','i','i','o','o','o','o','o','o','o','o','n','n','n','n','n','n','n','r','r','r','r','r','r','t','t','t','t','t','t','t','l','l','l','l','s','s','s','s','u','u','u','u','d','d','d','d','g','g','g','b','b','c','c','m','m','p','p','f','f','h','h','v','v','w','w','y','y','k','j','x','q','z','@','@'];
+
 var lettersRemainingInStack=100;
 var letterRack="";
 var playerID=0;
@@ -33,6 +38,66 @@ var wordMultiplyersScored=[];
 var currentRnd = [wordInPlay,locationsPlayed,scoresByLetter,wordMultiplyersScored]
 var playHistory = [playerID,roundNumber,wordInPlay,locationsPlayed,scoresByLetter,wordMultiplyersScored];
 
+
+boardMaker();
+
+function boardMaker(){
+  alert('loop on');
+  var j=0;
+  var row=0;
+  var column=0;
+  var boardArrayIndex = 0;
+  var wordLetterScore ="";
+  var locationColor='rgba(255, 254, 231, 1.0)';
+  var backGroundImg=""
+
+for(var i=0; i<225; i++){
+  locationColor='rgba(255, 254, 231, 1.0)';
+  if(i>112){j=250-i}else{j=i};
+
+  column=((i%15)+1);
+  row=(Math.floor(i/15))+1;
+  console.log(boardMap[boardArrayIndex]);
+  backGroundImg="";
+
+  if(boardMap[boardArrayIndex][0]===row&&boardMap[boardArrayIndex][1]===column ){
+    wordLetterScore=boardMap[boardArrayIndex][2];
+
+    switch(true){
+      case (boardMap[boardArrayIndex][2].charAt(0)==='3' && boardMap[boardArrayIndex][2].charAt(1)==='w'):
+      locationColor = 'rgba(252, 13, 27, 1.0)';
+      break;
+      case (boardMap[boardArrayIndex][2].charAt(0)==='2' &&boardMap[boardArrayIndex][2].charAt(1)==='w'):
+      locationColor = 'rgba(249, 154, 249, 1.0)';
+      break;
+      case (boardMap[boardArrayIndex][2].charAt(0)==='3' &&boardMap[boardArrayIndex][2].charAt(1)==='l'):
+      locationColor = 'rgba(13, 63, 251, 1.0)';
+      break;
+      case (boardMap[boardArrayIndex][2].charAt(0)==='2' &&boardMap[boardArrayIndex][2].charAt(1)==='l'):
+      locationColor = 'rgba(107, 205, 253, 1.0)';
+      break;
+      case (boardMap[boardArrayIndex][2].charAt(1)===''):
+      locationColor = 'rgba(249, 154, 249, 1.0)'; backGroundImg = '; background-image: url(images/star.png); background-size:cover; background-repeat:   no-repeat;'
+    //background-position: center center; '
+      break;
+      default: locationColor='rgba(255, 254, 231, 1.0)';backGroundImg="";
+
+    }
+   
+    
+    boardArrayIndex++;
+  }
+  else
+  {wordLetterScore=""};
+  
+
+
+  var location = '<div class = "location" id=b'+row+'_'+column+'_u style = "background:'+locationColor+backGroundImg+'",><div class = "tileValue">'+wordLetterScore+'</div></div>'
+  $( "#gameBoard" ).append($(location) );
+
+};
+
+};
 
    $(".location").click(function() {
     
@@ -262,12 +327,12 @@ function pickLetters(){
    for(var i=0; i<7; i++)
     {
         randomIndex= (Math.ceil(Math.random()*lettersRemainingInStack));
-        letterRack=letterRack+fullLetterStack[randomIndex];
-       fullLetterStack.splice(fullLetterStack.indexOf(fullLetterStack[i]), 1);
+        letterRack=letterRack+lettersInPlay[randomIndex];
+       lettersInPlay.splice(lettersInPlay.indexOf(lettersInPlay[i]), 1);
        lettersRemainingInStack--;
     };
     alert(letterRack);
-    alert(fullLetterStack);
+    alert(lettersInPlay);
 }
 
 function dropTileOnSquare(){
