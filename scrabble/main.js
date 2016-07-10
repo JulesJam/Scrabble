@@ -27,77 +27,138 @@ var currentMove=[];
 var archiveMove=[];
 var playDirection="";
 var iDToCheck="";
-var rightSquareContent="";
+//var rightSquareContent="";
+var roundNumber=1;
+var numberPlayers=2;
+var playerId=0;
+var wordRef=1;
+var wordPlayed="";
 var wordInPlay ="";
+var wordScore;
 var phraseToSay="";
 var tileLocked="no";
 var locationsPlayed = [];
 var scoresByLetter=[];
-var letterMultiplyersScored=[];
-var wordMultiplyersScored=[];
-var currentRnd = [wordInPlay,locationsPlayed,scoresByLetter,wordMultiplyersScored]
-var playHistory = [playerID,roundNumber,wordInPlay,locationsPlayed,scoresByLetter,wordMultiplyersScored];
+var letterMultiplyers=[];
+var wordMultiplyers=[];
+var currentRnd = 1;
+var playHistory = [roundNumber,playerId, wordRef, wordPlayed,wordScore,locationsPlayed,scoresByLetter,letterMultiplyers, wordMultiplyers];
 
 
 boardMaker();
+rackMaker();
 
+//Constructor to draw board
 function boardMaker(){
-  alert('loop on');
   var j=0;
   var row=0;
   var column=0;
   var boardArrayIndex = 0;
   var wordLetterScore ="";
-  var locationColor='rgba(255, 254, 231, 1.0)';
+  var locationColor='rgba(255, 254, 231, .9)';
   var backGroundImg=""
 
-for(var i=0; i<225; i++){
-  locationColor='rgba(255, 254, 231, 1.0)';
-  if(i>112){j=250-i}else{j=i};
+  for(var i=0; i<225; i++){
+    locationColor='rgba(255, 254, 231, .9)';
+    if(i>112){j=250-i}else{j=i};
 
-  column=((i%15)+1);
-  row=(Math.floor(i/15))+1;
-  console.log(boardMap[boardArrayIndex]);
-  backGroundImg="";
+    column=((i%15)+1);
+    row=(Math.floor(i/15))+1;
+    console.log(boardMap[boardArrayIndex]);
+    backGroundImg=""
 
-  if(boardMap[boardArrayIndex][0]===row&&boardMap[boardArrayIndex][1]===column ){
-    wordLetterScore=boardMap[boardArrayIndex][2];
+    if(boardMap[boardArrayIndex][0]===row&&boardMap[boardArrayIndex][1]===column ){
+      wordLetterScore=boardMap[boardArrayIndex][2];
 
-    switch(true){
-      case (boardMap[boardArrayIndex][2].charAt(0)==='3' && boardMap[boardArrayIndex][2].charAt(1)==='w'):
-      locationColor = 'rgba(252, 13, 27, 1.0)';
-      break;
-      case (boardMap[boardArrayIndex][2].charAt(0)==='2' &&boardMap[boardArrayIndex][2].charAt(1)==='w'):
-      locationColor = 'rgba(249, 154, 249, 1.0)';
-      break;
-      case (boardMap[boardArrayIndex][2].charAt(0)==='3' &&boardMap[boardArrayIndex][2].charAt(1)==='l'):
-      locationColor = 'rgba(13, 63, 251, 1.0)';
-      break;
-      case (boardMap[boardArrayIndex][2].charAt(0)==='2' &&boardMap[boardArrayIndex][2].charAt(1)==='l'):
-      locationColor = 'rgba(107, 205, 253, 1.0)';
-      break;
-      case (boardMap[boardArrayIndex][2].charAt(1)===''):
-      locationColor = 'rgba(249, 154, 249, 1.0)'; backGroundImg = '; background-image: url(images/star.png); background-size:cover; background-repeat:   no-repeat;'
-    //background-position: center center; '
-      break;
-      default: locationColor='rgba(255, 254, 231, 1.0)';backGroundImg="";
+      switch(true){
+        case (boardMap[boardArrayIndex][2].charAt(0)==='3' && boardMap[boardArrayIndex][2].charAt(1)==='w'):
+        locationColor = 'rgba(252, 13, 27, 1.0)';
+        break;
+        case (boardMap[boardArrayIndex][2].charAt(0)==='2' &&boardMap[boardArrayIndex][2].charAt(1)==='w'):
+        locationColor = 'rgba(249, 154, 249, 1.0)';
+        break;
+        case (boardMap[boardArrayIndex][2].charAt(0)==='3' &&boardMap[boardArrayIndex][2].charAt(1)==='l'):
+        locationColor = 'rgba(13, 63, 251, 1.0)';
+        break;
+        case (boardMap[boardArrayIndex][2].charAt(0)==='2' &&boardMap[boardArrayIndex][2].charAt(1)==='l'):
+        locationColor = 'rgba(107, 205, 253, 1.0)';
+        break;
+        case (boardMap[boardArrayIndex][2].charAt(1)===''):
+        locationColor = 'rgba(249, 154, 249, .9)'; backGroundImg = '; background-image: url(images/star.png); background-size:cover; background-repeat:   no-repeat;'
+      //background-position: center center; '
+        break;
+        default: locationColor='rgba(255, 254, 231, 1.0)';backGroundImg="";
 
+      }
+      boardArrayIndex++;
     }
+    else
+      {wordLetterScore=""};
+      
+      var location = '<div class = "location" id=b'+row+'_'+column+'_u style = "background:'+locationColor+backGroundImg+'",><div class = "tileValue">'+wordLetterScore+'</div></div>';
+
+    $( "#gameBoard" ).append($(location) );
+
+  };
+
+};
+
+//make letter racks
+function rackMaker(){
+
+  var rackBaseLocationTop= 0;
+  var rackBaseLocationLeft =0;
+  var rackItemId="";
+  var rackLocation="";
+
+  for(var i = 0; i<numberPlayers; i++){
    
     
-    boardArrayIndex++;
-  }
-  else
-  {wordLetterScore=""};
+
+    
+
   
+    if((i+1)%2 !=0){
+      rackBaseLocationTop=$(document).height()*(1/numberPlayers);
+      rackBaseLocationLeft=18;
+    }
+    else{
+      rackBaseLocationTop=($(document).height()*(1/numberPlayers)-(i*44));
+      rackBaseLocationLeft=($(document).width()-328);
+    };
 
+    var rack = '<div class= "rack" id = player'+(i+1)+' style =></div>';
 
-  var location = '<div class = "location" id=b'+row+'_'+column+'_u style = "background:'+locationColor+backGroundImg+'",><div class = "tileValue">'+wordLetterScore+'</div></div>'
-  $( "#gameBoard" ).append($(location) );
+    console.log("top "+rackBaseLocationTop+" left "+rackBaseLocationLeft);
+
+   
+
+   
+    $('#game').append($(rack));
+    $("#player"+(i+1)).offset({top: rackBaseLocationTop, left: rackBaseLocationLeft});
+    for(var r=0; r<7; r++){
+      rackItemId = "r1_"+(r+1)+"_u_p"+(i+1);
+      rackLocation = '<div class = "location" id = '+rackItemId+'><div class = "tileValue">A</div><div class="score">1</div></div>'
+      $('#player'+(i+1)).append($(rackLocation));
+      $('#'+rackItemId).css({width:'42px',height:'37px', fontSize:'10px' , paddingTop:'5px', background:'rgba(255, 254, 231, 1.0'});
+      
+    };
+  };
+  $('.rack').css({border:'1px', width:'308px',height:'44px', background:'rgba(255,0,0,.5)'})
 
 };
 
-};
+
+// .rack{
+//   border:1px solid black;
+//   width:308;
+//   height:44px;
+//   background-color: rgba(255,0,0,.5);
+  
+// }
+
+
+
 
    $(".location").click(function() {
     
