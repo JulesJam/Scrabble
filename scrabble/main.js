@@ -56,7 +56,8 @@ var locationInPlayId=""
 var thisAction ="pickUp";
 var tileDrop =0;
 var lastMove=[];
-var currentMove=[];
+var pickUpParameters=new Object();
+var putDownParameters=new Object();
 var archiveMove=[];
 var playDirection="";
 var iDToCheck="";
@@ -70,8 +71,8 @@ var wordInPlay ="";
 var wordScore;
 var phraseToSay="";
 var tileLocked="no";
-var tileRacks=[];
-var rackContent=['','','','','','',''];
+var tileRacks=[[],[],[],[]];
+var rackContent=[];
 var rackLetter="";
 var locationsPlayed = [];
 var scoresByLetter=[];
@@ -79,6 +80,7 @@ var letterMultiplyers=[];
 var wordMultiplyers=[];
 var currentRnd = 1;
 var playHistory = [roundNumber,playerId, wordRef, wordPlayed,wordScore,locationsPlayed,scoresByLetter,letterMultiplyers, wordMultiplyers];
+var speachSwitch ="on";
 
 
 boardMaker();
@@ -146,10 +148,16 @@ function rackMaker(){
   var rackBaseLocationLeft =0;
   var rackItemId="";
   var rackLocation="";
+  var i=0;
+  var r=0;
+
+ 
 
 //build a rack to hold letters for each player
-  for(var i = 0; i<numberPlayers; i++){
+  for( i = 0; i<numberPlayers; i++){
+
     //set rack position depending on number of players - may need adjusting
+
     if((i+1)%2 !=0){
       rackBaseLocationTop=$(document).height()*(1/numberPlayers);
       rackBaseLocationLeft=18;
@@ -165,67 +173,157 @@ function rackMaker(){
     //position rack
     $("#player"+(i+1)).offset({top: rackBaseLocationTop, left: rackBaseLocationLeft});
     //create an array for each rack in play
-    tileRacks.push(rackContent);
+
    
-    
-
-
-    console.log(tileRacks);
-console.log(lettersInPlay.length);
     //create the tiles on each rack
-    for(var r=0; r<7; r++){
+
+    for(r=0; r<7; r++){
       rackItemId = "r1_"+(r+1)+"_u_p"+(i+1);
       //pickletter for tile
       pickLetter();
-    
-      //getLeterValue
-      
-
-     
+      //add the letter and the letter value to the tileHTML
       rackLocation = '<div class = "location" id = '+rackItemId+'><div class = "tileValue">'+rackLetter.toUpperCase()+'</div><div class="score">'+letterValues[rackLetter]+'</div></div>'
       $('#player'+(i+1)).append($(rackLocation));
       $('#'+rackItemId).css({width:'42px',height:'31px', color:'rgba(137, 185, 226, 1.0)',fontName:'lato,sansSerif', fontSize:'16px' , fontWeight:'700', paddingTop:'10px', background:'rgba(255, 254, 231, 1.0'});
-      
-
-      
+      //putLetter In Rack Array
+      tileRacks[i][r]=rackLetter.toUpperCase();
     };
+  
   };
   $('.rack').css({border:'1px', width:'308px',height:'44px', background:'rgba(255,0,0,.5)'})
-  console.log(lettersInPlay.length);
+  
 
 };
 
 
-// .rack{
-//   border:1px solid black;
-//   width:308;
-//   height:44px;
-//   background-color: rgba(255,0,0,.5);
-  
-// }
+
 
 
 
 
    $(".location").click(function() {
+
+
+    if (thisAction==="pickUp"){
+    pickUpParameters.rackOrGrid =($(this).attr('id')).charAt(0);//location r rack g grid
+    pickUpParameters.row = ($(this).attr('id')).charAt(1);//row identifier
+    pickUpParameters.column =($(this).attr('id')).charAt(3);//column identifier
+    pickUpParameters.lockStatus=($(this).attr('id')).charAt(5);//lock status
+    pickUpParameters.playerId=($(this).attr('id')).charAt(8);//playerIdentifier
+    pickUpParameters.html = ($(this).html());//html from clicked tile
+    pickUpParameters.letter = ($(this).text()).charAt(0);//Letter Value
+    pickUpParameters.score = ($(this).text()).charAt(1);//Letter Value
+    pickUpParameters.fullId=($(this).attr('id'));
+
+
+    console.log(">>>>>>>>>>>>>>>>>Pick Up<<<<<<<<<<<<<<<<<<<<<<");
+    console.log("rack or grid="+ pickUpParameters.rackOrGrid);
+    console.log("row = "+ pickUpParameters.row);
+    console.log("column = "+ pickUpParameters.column);
+    console.log("lock Status = "+ pickUpParameters.lockStatus);
+    console.log("player ID ="+ pickUpParameters.playerId);
+    console.log("html = "+ pickUpParameters.html);
+    console.log("Letter = "+ pickUpParameters.letter);
+    console.log("Score = "+ pickUpParameters.score);
+    console.log("FullId = "+ pickUpParameters.fullId);
+    console.log("                                               ");
+    }else
+    {
+      putDownParameters.rackOrGrid =($(this).attr('id')).charAt(0);//location r rack g grid
+      putDownParameters.row = ($(this).attr('id')).charAt(1);//row identifier
+      putDownParameters.column =($(this).attr('id')).charAt(3);//column identifier
+      putDownParameters.lockStatus=($(this).attr('id')).charAt(5);//lock status
+      putDownParameters.playerId=($(this).attr('id')).charAt(8);//playerIdentifier
+      putDownParameters.html = ($(this).html());//html from clicked tile
+      putDownParameters.letter = ($(this).text()).charAt(0);//Letter Value
+      putDownParameters.score = ($(this).text()).charAt(1);//Letter Value
+      putDownParameters.fullId=($(this).attr('id'));
+      putDownParameters.topCoOrd=$(this).offset().top;
+      putDownParameters.leftCoOrd=$(this).offset().left;
+
+
+    console.log(">>>>>>>>>>>>>>>>>Put Down<<<<<<<<<<<<<<<<<<<<<<");
+    console.log("rack or grid="+ putDownParameters.rackOrGrid);
+    console.log("row = "+ putDownParameters.row);
+    console.log("column = "+ putDownParameters.column);
+    console.log("lock Status = "+ putDownParameters.lockStatus);
+    console.log("player ID ="+ putDownParameters.playerId);
+    console.log("html = "+ putDownParameters.html);
+    console.log("Letter = "+ putDownParameters.letter);
+    console.log("Score = "+ putDownParameters.score);
+    console.log("FullId = "+ putDownParameters.fullId);
+
+    console.log("                                               ");
+
+    };
+
+
+    //Check if tile can be played.
+
+    if(thisAction === "pickUp"&&(pickUpParameters.lockStatus==="l"||pickUpParameters.letter==="")){
+      tileToWobble ='#'+ pickUpParameters.fullId;
+      wobble(tileToWobble);
+      wobble(tileToWobble);
+      speak("Not a valid selection");
+      console.log("next action = "+thisAction);
+      return
+    }
+
+    else if (thisAction==="pickUp"){
+      //,,,,,,,need an iftstament to check if picking up from grid what the fill should be i.e. 3l 2l 3w 2w etc
+     speak("You have selected "+pickUpParameters.letter)
+     var playerIndex=(+pickUpParameters.playerId-1);
+     var tileIndex=((+pickUpParameters.column-1));
+     console.log("rack array "+tileRacks[playerIndex]+" "+playerIndex+' tileIndex '+tileIndex);
+     thisAction="putDown";
+     /////clear text from picked up cell
+     $(this).text("");
+     //remove from rack array
+  
+   
+     tileRacks[playerIndex][tileIndex]="";
+     console.log('tile rack 0 now'+ tileRacks[0]+" rack 1"+tileRacks[1]);
+     return
+    }
     
-    console.log('<<<<<<<<<<<<<<<<NEXT MOVE>>>>>>>>>>>>>>>>>');
+
+    if(thisAction==="putDown"&&putDownParameters.rackOrGrid==="r"&&putDownParameters.letter===""){
+      //move square from rack to grid
+      var playerIndex=(+putDownParameters.playerId-1);
+      var tileIndex=((+putDownParameters.column-1));
+      speak("PutDown "+pickUpParameters.letter);
+      $(this).html(pickUpParameters.html);
+      tileRacks[playerIndex][tileIndex]=pickUpParameters.letter;
+      console.log('tile rack 0 now'+ tileRacks[0]+" rack 1"+tileRacks[1]);
+
+      thisAction="pickUp";
+
+    }else{
+      tileToWobble ='#'+ putDownParameters.fullId;
+      wobble(tileToWobble);
+      wobble(tileToWobble);
+      speak("You cannot place a tile here, sorry");
+      console.log("next action = "+thisAction);
+
+    }
+    
+   /* console.log('<<<<<<<<<<<<<<<<NEXT MOVE>>>>>>>>>>>>>>>>>');
     console.log($(this).attr('id'));
     console.log("tileDrop "+tileDrop);
     console.log("thisAction"+thisAction);
     console.log("CurrentWord"+wordInPlay);
-    console.log("currentMove"+currentMove);
+    console.log("pickUpParameters"+pickUpParameters);
 
-    currentMove[0]=($(this).attr('id')).charAt(0);//location r rack g grid
-    currentMove[1]=($(this).attr('id')).charAt(1);//row identifier
-    currentMove[2]=($(this).attr('id')).charAt(3);//column identifier
-    currentMove[3]=($(this).attr('id')).charAt(5);//lock status
+    pickUpParameters[0]=($(this).attr('id')).charAt(0);//location r rack g grid
+    pickUpParameters[1]=($(this).attr('id')).charAt(1);//row identifier
+    pickUpParameters[2]=($(this).attr('id')).charAt(3);//column identifier
+    pickUpParameters[3]=($(this).attr('id')).charAt(5);//lock status
 
-    console.log('class = '+currentMove[3])
+    console.log('class = '+pickUpParameters[3])
 
     //check if the tile is locked i.e. cannot be played
 
-    if(currentMove[3]==="l"){
+    if(pickUpParameters[3]==="l"){
     //warn not available to play
     }
     //else{        //PickUp test if next actions is pickup check content}
@@ -235,9 +333,9 @@ console.log(lettersInPlay.length);
             //check if pick up location is a letter or an empty square if a letter get letter  next actio is put down
 
               console.log("pick up triggered");
-              console.log("current move in pick up "+currentMove);
+              console.log("current move in pick up "+pickUpParameters);
               console.log("lastMove in pick up "+lastMove);
-              console.log("currentMove 0"+currentMove[0]);
+              console.log("pickUpParameters 0"+pickUpParameters[0]);
               tileInPlayText = $(this).text().charAt(0);
               tileInPlayHTML= $(this).html();
               locationInPlayId = $(this).attr('id');
@@ -245,14 +343,14 @@ console.log(lettersInPlay.length);
               thisAction="putDown";
               
              
-              if(currentMove[0]==="b"){
+              if(pickUpParameters[0]==="b"){
                 tileDrop--;
                 wordInPlay=wordInPlay.replace(tileInPlayText,"");
                 currentRnd[0]=wordInPlay;
 
 
               console.log("pick up from board");
-              console.log("currentMove 0="+currentMove[0]);
+              console.log("pickUpParameters 0="+pickUpParameters[0]);
               console.log("next action is "+thisAction);
               console.log('next action is'+thisAction);
               console.log('after pickUp tile drop is '+tileDrop);
@@ -268,7 +366,7 @@ console.log(lettersInPlay.length);
         else{
         //if thisaction is putDown...
       //Case first tile droppped: Check if put down location is empty and the tiledrop status if it is empty and this is the first tile make the location the tile value then change the next actio to a pickup. Also change the tile drop to 1. Record where this tile was dropped. Update the current word 
-            if ($(this).text()===""&&thisAction==="putDown" &&(currentMove[0]==="r"))
+            if ($(this).text()===""&&thisAction==="putDown" &&(pickUpParameters[0]==="r"))
                 {
                 console.log('Case---------------------->R');
                 console.log('tileDrop was '+tileDrop);
@@ -305,7 +403,7 @@ console.log(lettersInPlay.length);
                 console.log("case 0----------")
                 console.log("last move was "+lastMove);
                 console.log("tileDrop"+tileDrop);
-                console.log(" currentMove "+currentMove+" lastMove "+lastMove)
+                console.log(" pickUpParameters "+pickUpParameters+" lastMove "+lastMove)
                          
     //              //test to check square to the right
     //              // iDToCheck = "#"+lastMove[0]+lastMove[1]+"_"+(+lastMove[2]+1);
@@ -320,22 +418,22 @@ console.log(lettersInPlay.length);
 
                 (($(this).text()==="" && thisAction === "putDown" && tileDrop===1 &&
                 (
-                ((+currentMove[1]=== +lastMove[1]+1)&&(+currentMove[2]=== +lastMove[2]))
+                ((+pickUpParameters[1]=== +lastMove[1]+1)&&(+pickUpParameters[2]=== +lastMove[2]))
                 ||
-                ((+currentMove[2]=== +lastMove[2]+1)&&(+currentMove[1]=== +lastMove[1]))
+                ((+pickUpParameters[2]=== +lastMove[2]+1)&&(+pickUpParameters[1]=== +lastMove[1]))
                 ||
-                ($(this).text()==="" && tileDrop===1 &&currentMove[0]==="r"))))
+                ($(this).text()==="" && tileDrop===1 &&pickUpParameters[0]==="r"))))
                         
                 {
                 console.log('case 1--------');
                 console.log('vh check');
-                console.log('Current Move 0'+currentMove[0]);
-                console.log(" currentMove "+currentMove+" lastMove "+lastMove)
+                console.log('Current Move 0'+pickUpParameters[0]);
+                console.log(" pickUpParameters "+pickUpParameters+" lastMove "+lastMove)
                 console.log("tile Drop"+tileDrop);
                 //if the tile is place on the grid check if it is below or to the right and set the word direction as horizontal or vertical, this deteremines where futrther tiles may be placed
                                  
                    
-                     if(+currentMove[1]===+lastMove[1]+1){
+                     if(+pickUpParameters[1]===+lastMove[1]+1){
                      playDirection = "vertical";
                      }
                      else {playDirection = "horizontal"
@@ -361,22 +459,22 @@ console.log(lettersInPlay.length);
             else if(
                 ($(this).text()==="" && thisAction === "putDown" && tileDrop>1 
                 )
-                &&(playDirection==='horizontal'&&((+currentMove[2]=== +lastMove[2]+1)&&(+   currentMove[1]===+lastMove[1])))
-                ||(playDirection==='vertical'&&(+currentMove[1]=== +lastMove[1]+1)&&(  +currentMove[2]===+lastMove[2])))
+                &&(playDirection==='horizontal'&&((+pickUpParameters[2]=== +lastMove[2]+1)&&(+   pickUpParameters[1]===+lastMove[1])))
+                ||(playDirection==='vertical'&&(+pickUpParameters[1]=== +lastMove[1]+1)&&(  +pickUpParameters[2]===+lastMove[2])))
                         
                 {
                     if($(this).text()==="" && thisAction === "putDown" && tileDrop>1 
                 ){console.log('fist test is true' )};
-                    if((playDirection === "vertical"&&((+currentMove[1]===+lastMove[1]+1)&&(+currentMove[2]===+lastMove[2])))){console.log('secondtest is true' )};
-                    if((playDirection === "horizontal" && ((+currentMove[2]===+lastMove[2]+1)&&(+currentMove[1]===+currentMove[1])))){
+                    if((playDirection === "vertical"&&((+pickUpParameters[1]===+lastMove[1]+1)&&(+pickUpParameters[2]===+lastMove[2])))){console.log('secondtest is true' )};
+                    if((playDirection === "horizontal" && ((+pickUpParameters[2]===+lastMove[2]+1)&&(+pickUpParameters[1]===+pickUpParameters[1])))){
                         console.log('third test is true' )
                     };
 
 
                 console.log('case 2--------');
                 console.log('vh check');
-                console.log('Current Move 0'+currentMove[0]);
-                console.log(" currentMove "+currentMove+" lastMove "+lastMove)
+                console.log('Current Move 0'+pickUpParameters[0]);
+                console.log(" pickUpParameters "+pickUpParameters+" lastMove "+lastMove)
                 console.log("tile Drop"+tileDrop);
                 //if the tile is place on the grid check if it is below or to the right and set the word direction as horizontal or vertical, this deteremines where futrther tiles may be placed
                                  
@@ -399,11 +497,11 @@ console.log(lettersInPlay.length);
              else
                 {   
                      console.log("square occupied/can't be played")
-                     console.log(" currentMove "+currentMove+" lastMove "+lastMove)
+                     console.log(" pickUpParameters "+pickUpParameters+" lastMove "+lastMove)
                      console.log("tileDrop"+tileDrop);
                      console.log("directionOfPlay is on fail "+playDirection);
                      console.log(lastMove[0]+1)
-                     tileToWobble ='#'+ currentMove[0]+currentMove[1]+"_"+currentMove[2]+"_"+        currentMove[3];
+                     tileToWobble ='#'+ pickUpParameters[0]+pickUpParameters[1]+"_"+pickUpParameters[2]+"_"+        pickUpParameters[3];
                      wobble(tileToWobble);
                 } //>>>>end of case square is empty
             
@@ -415,7 +513,7 @@ console.log("word in play is "+wordInPlay);
 console.log("next action is ..."+thisAction);
 console.log("tileDrop"+tileDrop);
 console.log("archive move nnn"+archiveMove);
-console.log("endOfMove------------->");
+console.log("endOfMove------------->");*/
 
  });
 
@@ -447,14 +545,17 @@ function dropTileOnSquare(){
     console.log("case 0----------")
     console.log("last move was "+lastMove);
     console.log("tileDrop"+tileDrop);
-    console.log(" currentMove "+currentMove+" lastMove "+lastMove)
+    console.log(" pickUpParameters "+pickUpParameters+" lastMove "+lastMove)
 
 };
 
     
  //speak 
     function speak(phraseToSay, callback) {
-        alert('speak is called');
+        //alert('speak is called');
+        if(speachSwitch!="on"){
+          return
+        }
         if(phraseToSay.length >100){
             phraseToSay="Sorry, your browser prevents me reading really long definitions,  please read it for your self"//,,,,,,,,,put in script to display full definitions
         }
@@ -589,5 +690,5 @@ var timerId = setInterval(function() {
   if(wobbleCount ===0) {
     clearInterval(timerId);
   }
-}, 50);//ms between wobbles
+}, 100);//ms between wobbles
 }
