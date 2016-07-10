@@ -400,7 +400,46 @@ function rackMaker(){
       thisAction="pickUp"
     }
 
+    else if (lettersInThisRound>1&&thisAction==="putDown"&&putDownParameters.rackOrBoard==="b"&&(putDownParameters.letter===""||putDownParameters.boardMarkerCheck===true)
+      &&((playHistory.direction==="horizontal"&&+putDownParameters.row===+firstRowPlayed&&+firstColumnPlayed<+putDownParameters.column)||(playHistory.direction==="vertical"&&+firstColumnPlayed===+putDownParameters.column&&+putDownParameters.row>+firstRowPlayed))
 
+      ){
+      $(this).html(pickUpParameters.html);
+      console.log('tile rack 0 now'+ tileRacks[0]+" rack 1"+tileRacks[1]);
+      console.log('secondletter of game put down')
+      lettersInThisRound++
+      
+      console.log('first row played'+firstRowPlayed);
+    
+      console.log('first column played'+firstColumnPlayed);
+      var thisRow=putDownParameters.row;
+      var thisColumn=putDownParameters.column;
+      console.log('this row'+thisRow);
+      console.log('this column'+thisColumn);
+      if(firstRowPlayed===thisRow){playHistory.direction="horizontal"}
+        else{ playHistory.direction="vertical"}
+
+
+
+      playHistory.roundNumber=roundNumber;
+      playHistory.playerId=pickUpParameters.playerId;
+      playHistory.wordRef=currentWordRef;
+      playHistory.locationsPlayed[lettersInThisRound]=putDownParameters.fullId;
+      playHistory.scoresByLetter[lettersInThisRound]=pickUpParameters.score;
+      playHistory.multiplyers[lettersInThisRound]=putDownParameters.letter+putDownParameters.score;
+
+
+      console.log("round "+playHistory.roundNumber);
+      console.log("player "+playHistory.playerId);
+      console.log("wordRef "+playHistory.wordRef);
+      console.log("locationsPlayed "+playHistory.locationsPlayed);
+      console.log("scoresByLetter "+playHistory.scoresByLetter);
+      console.log("Multiplyers"+playHistory.multiplyers);
+      console.log("direction-->"+playHistory.direction);
+      thisAction="pickUp"
+    }
+
+    ///Case for further letter
 
 
     else{
