@@ -7,14 +7,47 @@ $(function(){
 // if ('speechSynthesis' in window) {
 //     alert('I can talk'); // Synthesis support. Make your web apps talk!
 // }
-var fullLetterStack = ['e','e','e','e','e','e','e','e','e','e','e','e','a','a','a','a','a','a','a','a','a','i','i','i','i','i','i','i','i','i','i','o','o','o','o','o','o','o','o','n','n','n','n','n','n','n','r','r','r','r','r','r','t','t','t','t','t','t','t','l','l','l','l','s','s','s','s','u','u','u','u','d','d','d','d','g','g','g','b','b','c','c','m','m','p','p','f','f','h','h','v','v','w','w','y','y','k','j','x','q','z','@','@'];
+var fullLetterStack = ['e','e','e','e','e','e','e','e','e','e','e','e','a','a','a','a','a','a','a','a','a','i','i','i','i','i','i','i','i','i','i','o','o','o','o','o','o','o','o','n','n','n','n','n','n','n','r','r','r','r','r','r','t','t','t','t','t','t','t','l','l','l','l','s','s','s','s','u','u','u','u','d','d','d','d','g','g','g','b','b','c','c','m','m','p','p','f','f','h','h','v','v','w','w','y','y','k','j','x','q','z','blank','blank'];
 
 var boardMap = [[1,1,'3w'],[1,4,'2l'],[1,8,'3w'],[1,12,'2l'],[1,15,'3w'],[2,2 ,'2w'],[2,6 ,'3l'],[2,10,'3l'],[2,14,'2w'],[3,3,'2w'],[3,7,'2l'],[3,9,'2l'],[3,13,'2w'],[4,4,'2w'],[4,8,'2l'],[4,12,'2w'],[5,5,'2w'],[5,11,'2w'],[6,6,'3l'],[6,10,'3l'],[7,7,'2l'],[7,9,'2l'],[8,8,''],[9,7,'2l'],[9,9,'2l'],[10,6,'3l'],[10,10,'3l'],[11,5,'2w'],[11,11,'2w'],[12,4,'2w'],[12,8,'2l'],[12,12,'2w'],[13,3,'2w'],[13,7,'2l'],[13,9,'2l'],[13,13,'2w'],[14,2,'2w'],[14,6,'3l'],[14,10,'3l'],[14,14,'2w'],[15,1,'3w'],[15,4,'2l'],[15,8,'3w'],[15,12,'2l'],[15,15,'3w']]
 
-var lettersInPlay = ['e','e','e','e','e','e','e','e','e','e','e','e','a','a','a','a','a','a','a','a','a','i','i','i','i','i','i','i','i','i','i','o','o','o','o','o','o','o','o','n','n','n','n','n','n','n','r','r','r','r','r','r','t','t','t','t','t','t','t','l','l','l','l','s','s','s','s','u','u','u','u','d','d','d','d','g','g','g','b','b','c','c','m','m','p','p','f','f','h','h','v','v','w','w','y','y','k','j','x','q','z','@','@'];
+var lettersInPlay = ['e','e','e','e','e','e','e','e','e','e','e','e','a','a','a','a','a','a','a','a','a','i','i','i','i','i','i','i','i','i','i','o','o','o','o','o','o','o','o','n','n','n','n','n','n','n','r','r','r','r','r','r','t','t','t','t','t','t','t','l','l','l','l','s','s','s','s','u','u','u','u','d','d','d','d','g','g','g','b','b','c','c','m','m','p','p','f','f','h','h','v','v','w','w','y','y','k','j','x','q','z','blank','blank'];
+
+var letterValues=new Object()
+  letterValues.blank=0
+  letterValues.e=1;
+  letterValues.a=1;
+  letterValues.i=1;
+  letterValues.o=1;
+  letterValues.n=1;
+  letterValues.r=1;
+  letterValues.t=1;
+  letterValues.l=1;
+  letterValues.s=1;
+  letterValues.u=1;
+  letterValues.d=2;
+  letterValues.g=2;
+  letterValues.b=3;
+  letterValues.c=3;
+  letterValues.m=3;
+  letterValues.p=3;
+  letterValues.f=4;
+  letterValues.h=4;
+  letterValues.v=4;
+  letterValues.w=4;
+  letterValues.y=4;
+  letterValues.k=5;
+  letterValues.j=8;
+  letterValues.x=8;
+  letterValues.q=10;
+  letterValues.z=10;
+
+
+console.log (letterValues.z)
 
 var lettersRemainingInStack=100;
 var letterRack="";
+var thisLetterValue=0;
 var playerID=0;
 var roundNumber=0;
 var tileInPlayText="";
@@ -37,6 +70,9 @@ var wordInPlay ="";
 var wordScore;
 var phraseToSay="";
 var tileLocked="no";
+var tileRacks=[];
+var rackContent=['','','','','','',''];
+var rackLetter="";
 var locationsPlayed = [];
 var scoresByLetter=[];
 var letterMultiplyers=[];
@@ -64,7 +100,7 @@ function boardMaker(){
 
     column=((i%15)+1);
     row=(Math.floor(i/15))+1;
-    console.log(boardMap[boardArrayIndex]);
+    
     backGroundImg=""
 
     if(boardMap[boardArrayIndex][0]===row&&boardMap[boardArrayIndex][1]===column ){
@@ -111,13 +147,9 @@ function rackMaker(){
   var rackItemId="";
   var rackLocation="";
 
+//build a rack to hold letters for each player
   for(var i = 0; i<numberPlayers; i++){
-   
-    
-
-    
-
-  
+    //set rack position depending on number of players - may need adjusting
     if((i+1)%2 !=0){
       rackBaseLocationTop=$(document).height()*(1/numberPlayers);
       rackBaseLocationLeft=18;
@@ -128,23 +160,38 @@ function rackMaker(){
     };
 
     var rack = '<div class= "rack" id = player'+(i+1)+' style =></div>';
-
-    console.log("top "+rackBaseLocationTop+" left "+rackBaseLocationLeft);
-
-   
-
-   
+    //add the racks to the board
     $('#game').append($(rack));
+    //position rack
     $("#player"+(i+1)).offset({top: rackBaseLocationTop, left: rackBaseLocationLeft});
+    //create an array for each rack in play
+    tileRacks.push(rackContent);
+   
+    
+
+
+    console.log(tileRacks);
+console.log(lettersInPlay.length);
+    //create the tiles on each rack
     for(var r=0; r<7; r++){
       rackItemId = "r1_"+(r+1)+"_u_p"+(i+1);
-      rackLocation = '<div class = "location" id = '+rackItemId+'><div class = "tileValue">A</div><div class="score">1</div></div>'
+      //pickletter for tile
+      pickLetter();
+    
+      //getLeterValue
+      
+
+     
+      rackLocation = '<div class = "location" id = '+rackItemId+'><div class = "tileValue">'+rackLetter.toUpperCase()+'</div><div class="score">'+letterValues[rackLetter]+'</div></div>'
       $('#player'+(i+1)).append($(rackLocation));
-      $('#'+rackItemId).css({width:'42px',height:'37px', fontSize:'10px' , paddingTop:'5px', background:'rgba(255, 254, 231, 1.0'});
+      $('#'+rackItemId).css({width:'42px',height:'31px', color:'rgba(137, 185, 226, 1.0)',fontName:'lato,sansSerif', fontSize:'16px' , fontWeight:'700', paddingTop:'10px', background:'rgba(255, 254, 231, 1.0'});
+      
+
       
     };
   };
   $('.rack').css({border:'1px', width:'308px',height:'44px', background:'rgba(255,0,0,.5)'})
+  console.log(lettersInPlay.length);
 
 };
 
@@ -379,21 +426,18 @@ $("#submitWord").click(function(){
     checkDefinition(wordInPlay);
 
 });
-var $generateLetters= $("#generateLetters");
-$generateLetters.on('click', pickLetters);
 
-function pickLetters(){
-    letterRack="";
 
-   for(var i=0; i<7; i++)
-    {
+function pickLetter(){
+    
+
         randomIndex= (Math.ceil(Math.random()*lettersRemainingInStack));
-        letterRack=letterRack+lettersInPlay[randomIndex];
-       lettersInPlay.splice(lettersInPlay.indexOf(lettersInPlay[i]), 1);
+        rackLetter=lettersInPlay[randomIndex];
+       lettersInPlay.splice(lettersInPlay.indexOf(randomIndex), 1);
        lettersRemainingInStack--;
-    };
-    alert(letterRack);
-    alert(lettersInPlay);
+
+    return rackLetter;
+   
 }
 
 function dropTileOnSquare(){
