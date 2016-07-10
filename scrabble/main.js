@@ -63,12 +63,13 @@ var playDirection="";
 var iDToCheck="";
 //var rightSquareContent="";
 var roundNumber=1;
-var numberPlayers=2;
+var numberPlayers=2;//max is 4
 var playerId=0;
 var wordRef=1;
 var wordPlayed="";
 var wordInPlay ="";
-var wordScore;
+var wordScore =0;
+var currentWordRef=0;
 var phraseToSay="";
 var tileLocked="no";
 var tileRacks=[[],[],[],[]];
@@ -79,8 +80,19 @@ var scoresByLetter=[];
 var letterMultiplyers=[];
 var wordMultiplyers=[];
 var currentRnd = 1;
-var playHistory = [roundNumber,playerId, wordRef, wordPlayed,wordScore,locationsPlayed,scoresByLetter,letterMultiplyers, wordMultiplyers];
-var speachSwitch ="on";
+var playHistory = new Object();
+  playHistory.roundNumber=0;
+  playHistory.playerId=1
+  playHistory.wordRef=0
+  playHistory.locationsPlayed=[];
+  playHistory.scoresByLetter=[];
+  playHistory.multiplyers=[];
+  playHistory.direction="";
+var roundHistory=[[],[],[],[]];
+var speachSwitch ="off";
+var lettersInThisRound=0;
+var firstRowPlayed=0;
+var firstColumnPlayed=0;
 
 
 boardMaker();
@@ -132,9 +144,18 @@ function boardMaker(){
     }
     else
       {wordLetterScore=""};
-      
-      var location = '<div class = "location" id=b'+row+'_'+column+'_u style = "background:'+locationColor+backGroundImg+'",><div class = "tileValue">'+wordLetterScore+'</div></div>';
-
+      if(row<10&&column<10){
+      var location = '<div class = "location" id=b0'+row+'0'+column+'_u style = "background:'+locationColor+backGroundImg+'",><div class = "tileValue">'+wordLetterScore+'</div></div>';
+      }
+      else if(row<10 && column>9){
+        var location = '<div class = "location" id=b0'+row+column+'_u style = "background:'+locationColor+backGroundImg+'",><div class = "tileValue">'+wordLetterScore+'</div></div>';
+      }
+      else if(row>9 && column<10){
+        var location = '<div class = "location" id=b'+row+'0'+column+'_u style = "background:'+locationColor+backGroundImg+'",><div class = "tileValue">'+wordLetterScore+'</div></div>';
+      }
+      else {
+        var location = '<div class = "location" id=b'+row+'_'+column+'_u style = "background:'+locationColor+backGroundImg+'",><div class = "tileValue">'+wordLetterScore+'</div></div>';
+      }
     $( "#gameBoard" ).append($(location) );
 
   };
@@ -178,7 +199,7 @@ function rackMaker(){
     //create the tiles on each rack
 
     for(r=0; r<7; r++){
-      rackItemId = "r1_"+(r+1)+"_u_p"+(i+1);
+      rackItemId = "r010"+(r+1)+"_u_p"+(i+1);
       //pickletter for tile
       pickLetter();
       //add the letter and the letter value to the tileHTML
@@ -205,19 +226,21 @@ function rackMaker(){
 
 
     if (thisAction==="pickUp"){
-    pickUpParameters.rackOrGrid =($(this).attr('id')).charAt(0);//location r rack g grid
-    pickUpParameters.row = ($(this).attr('id')).charAt(1);//row identifier
-    pickUpParameters.column =($(this).attr('id')).charAt(3);//column identifier
-    pickUpParameters.lockStatus=($(this).attr('id')).charAt(5);//lock status
-    pickUpParameters.playerId=($(this).attr('id')).charAt(8);//playerIdentifier
+    pickUpParameters.rackOrBoard =($(this).attr('id')).charAt(0);//location r rack g grid
+    pickUpParameters.row = ($(this).attr('id')).charAt(1)+($(this).attr('id')).charAt(2);//row identifier
+    pickUpParameters.column =($(this).attr('id')).charAt(3)+($(this).attr('id')).charAt(4);//column identifier
+    pickUpParameters.lockStatus=($(this).attr('id')).charAt(6);//lock status
+    pickUpParameters.playerId=($(this).attr('id')).charAt(9);//playerIdentifier
     pickUpParameters.html = ($(this).html());//html from clicked tile
     pickUpParameters.letter = ($(this).text()).charAt(0);//Letter Value
     pickUpParameters.score = ($(this).text()).charAt(1);//Letter Value
     pickUpParameters.fullId=($(this).attr('id'));
+    if($(this).text().charAt(0)==="2" || $(this).text().charAt(0)==="3"){
+    pickUpParameters.boardMarkerCheck=true}else{pickUpParameters.boardMarkerCheck=false};
 
 
     console.log(">>>>>>>>>>>>>>>>>Pick Up<<<<<<<<<<<<<<<<<<<<<<");
-    console.log("rack or grid="+ pickUpParameters.rackOrGrid);
+    console.log("rack or grid="+ pickUpParameters.rackOrBoard);
     console.log("row = "+ pickUpParameters.row);
     console.log("column = "+ pickUpParameters.column);
     console.log("lock Status = "+ pickUpParameters.lockStatus);
@@ -226,24 +249,29 @@ function rackMaker(){
     console.log("Letter = "+ pickUpParameters.letter);
     console.log("Score = "+ pickUpParameters.score);
     console.log("FullId = "+ pickUpParameters.fullId);
+    console.log("Board Marker= "+ pickUpParameters.boardMarkerCheck);
+    console.log("RoundNumber "+roundNumber);
     console.log("                                               ");
+
     }else
     {
-      putDownParameters.rackOrGrid =($(this).attr('id')).charAt(0);//location r rack g grid
-      putDownParameters.row = ($(this).attr('id')).charAt(1);//row identifier
-      putDownParameters.column =($(this).attr('id')).charAt(3);//column identifier
-      putDownParameters.lockStatus=($(this).attr('id')).charAt(5);//lock status
-      putDownParameters.playerId=($(this).attr('id')).charAt(8);//playerIdentifier
+      putDownParameters.rackOrBoard =($(this).attr('id')).charAt(0);//location r rack g grid
+      putDownParameters.row = ($(this).attr('id')).charAt(1)+($(this).attr('id')).charAt(2);//row identifier
+      putDownParameters.column =($(this).attr('id')).charAt(3)+($(this).attr('id')).charAt(4);//column identifier
+      putDownParameters.lockStatus=($(this).attr('id')).charAt(6);//lock status
+      putDownParameters.playerId=($(this).attr('id')).charAt(9);//playerIdentifier
       putDownParameters.html = ($(this).html());//html from clicked tile
       putDownParameters.letter = ($(this).text()).charAt(0);//Letter Value
       putDownParameters.score = ($(this).text()).charAt(1);//Letter Value
       putDownParameters.fullId=($(this).attr('id'));
       putDownParameters.topCoOrd=$(this).offset().top;
       putDownParameters.leftCoOrd=$(this).offset().left;
+      if($(this).text().charAt(0)==="2" || $(this).text().charAt(0)==="3"){
+      putDownParameters.boardMarkerCheck=true}else{putDownParameters.boardMarkerCheck=false};
 
 
     console.log(">>>>>>>>>>>>>>>>>Put Down<<<<<<<<<<<<<<<<<<<<<<");
-    console.log("rack or grid="+ putDownParameters.rackOrGrid);
+    console.log("rack or grid="+ putDownParameters.rackOrBoard);
     console.log("row = "+ putDownParameters.row);
     console.log("column = "+ putDownParameters.column);
     console.log("lock Status = "+ putDownParameters.lockStatus);
@@ -252,15 +280,18 @@ function rackMaker(){
     console.log("Letter = "+ putDownParameters.letter);
     console.log("Score = "+ putDownParameters.score);
     console.log("FullId = "+ putDownParameters.fullId);
+    console.log("boardMarkerCheck = "+ putDownParameters.boardMarkerCheck);
+    console.log("RoundNumber "+roundNumber);
+    console.log("letters in this round"+lettersInThisRound);
 
     console.log("                                               ");
 
     };
 
-
+//PICK UPS
     //Check if tile can be played.
-
-    if(thisAction === "pickUp"&&(pickUpParameters.lockStatus==="l"||pickUpParameters.letter==="")){
+    //if the tile being picked up is locked ie a committed word letter or it is not a tile ie a board or rack empty sq or it is sq on the baord with //a word or letter score none of these can be picked up
+    if(thisAction === "pickUp"&&(pickUpParameters.lockStatus==="l"||pickUpParameters.letter===""||pickUpParameters.boardMarkerCheck===true)){
       tileToWobble ='#'+ pickUpParameters.fullId;
       wobble(tileToWobble);
       wobble(tileToWobble);
@@ -268,26 +299,29 @@ function rackMaker(){
       console.log("next action = "+thisAction);
       return
     }
+    //knowing tha the tile can be picked up check if it is the grid or rack it is being picked up from this process is for the rack as it update the //rack array so when replenishemnet happens system knows where empties are and can check if none left
 
-    else if (thisAction==="pickUp"){
+
+    else if (thisAction==="pickUp" && pickUpParameters.rackOrBoard==="r"){
       //,,,,,,,need an iftstament to check if picking up from grid what the fill should be i.e. 3l 2l 3w 2w etc
      speak("You have selected "+pickUpParameters.letter)
      var playerIndex=(+pickUpParameters.playerId-1);
      var tileIndex=((+pickUpParameters.column-1));
      console.log("rack array "+tileRacks[playerIndex]+" "+playerIndex+' tileIndex '+tileIndex);
      thisAction="putDown";
-     /////clear text from picked up cell
+
+     /////clear text from picked up cell and remove from rack array
+
      $(this).text("");
-     //remove from rack array
-  
-   
      tileRacks[playerIndex][tileIndex]="";
      console.log('tile rack 0 now'+ tileRacks[0]+" rack 1"+tileRacks[1]);
      return
     }
     
+// PUT DOWNS
 
-    if(thisAction==="putDown"&&putDownParameters.rackOrGrid==="r"&&putDownParameters.letter===""){
+
+    if(thisAction==="putDown"&&putDownParameters.rackOrBoard==="r"&&putDownParameters.letter===""){
       //move square from rack to grid
       var playerIndex=(+putDownParameters.playerId-1);
       var tileIndex=((+putDownParameters.column-1));
@@ -298,12 +332,84 @@ function rackMaker(){
 
       thisAction="pickUp";
 
-    }else{
+    }
+
+    //Special case first letter in a round
+    else if (lettersInThisRound===0&&thisAction==="putDown"&&putDownParameters.rackOrBoard==="b"&&(putDownParameters.letter===""||putDownParameters.boardMarkerCheck===true)){
+      $(this).html(pickUpParameters.html);
+      console.log('tile rack 0 now'+ tileRacks[0]+" rack 1"+tileRacks[1]);
+      console.log('first letter of game put down')
+      lettersInThisRound++
+      playHistory.roundNumber=roundNumber;
+      playHistory.playerId=pickUpParameters.playerId;
+      playHistory.wordRef=currentWordRef;
+      playHistory.locationsPlayed[lettersInThisRound]=putDownParameters.fullId;
+      playHistory.scoresByLetter[lettersInThisRound]=pickUpParameters.score;
+      playHistory.multiplyers[lettersInThisRound]=putDownParameters.letter+putDownParameters.score;
+      firstRowPlayed=playHistory.locationsPlayed[1].charAt(1)+playHistory.locationsPlayed[1].charAt(2);
+      firstColumnPlayed=playHistory.locationsPlayed[1].charAt(3)+playHistory.locationsPlayed[1].charAt(4)
+
+      console.log("round "+playHistory.roundNumber);
+      console.log("player "+playHistory.playerId);
+      console.log("wordRef "+playHistory.wordRef);
+      console.log("locationsPlayed "+playHistory.locationsPlayed);
+      console.log("scoresByLetter "+playHistory.scoresByLetter);
+      console.log("Multiplyers"+playHistory.multiplyers);
+      console.log("First Row Played on putdown first tile"+firstRowPlayed);
+      console.log("First columnPlayed on putdown first tile"+firstColumnPlayed);
+      thisAction="pickUp"
+    }
+
+    ////special Case for second letter in round check whether play is horizontal or vertical
+    else if (lettersInThisRound===1&&thisAction==="putDown"&&putDownParameters.rackOrBoard==="b"&&(putDownParameters.letter===""||putDownParameters.boardMarkerCheck===true)
+      &&((firstRowPlayed===putDownParameters.row && (+firstColumnPlayed)<+(putDownParameters.column))||(firstColumnPlayed===putDownParameters.column&&(+firstRowPlayed)<(+putDownParameters.row)))
+
+      ){
+      $(this).html(pickUpParameters.html);
+      console.log('tile rack 0 now'+ tileRacks[0]+" rack 1"+tileRacks[1]);
+      console.log('secondletter of game put down')
+      lettersInThisRound++
+      
+      console.log('first row played'+firstRowPlayed);
+    
+      console.log('first column played'+firstColumnPlayed);
+      var thisRow=putDownParameters.row;
+      var thisColumn=putDownParameters.column;
+      console.log('this row'+thisRow);
+      console.log('this column'+thisColumn);
+      if(firstRowPlayed===thisRow){playHistory.direction="horizontal"}
+        else{ playHistory.direction="vertical"}
+
+
+
+      playHistory.roundNumber=roundNumber;
+      playHistory.playerId=pickUpParameters.playerId;
+      playHistory.wordRef=currentWordRef;
+      playHistory.locationsPlayed[lettersInThisRound]=putDownParameters.fullId;
+      playHistory.scoresByLetter[lettersInThisRound]=pickUpParameters.score;
+      playHistory.multiplyers[lettersInThisRound]=putDownParameters.letter+putDownParameters.score;
+
+
+      console.log("round "+playHistory.roundNumber);
+      console.log("player "+playHistory.playerId);
+      console.log("wordRef "+playHistory.wordRef);
+      console.log("locationsPlayed "+playHistory.locationsPlayed);
+      console.log("scoresByLetter "+playHistory.scoresByLetter);
+      console.log("Multiplyers"+playHistory.multiplyers);
+      console.log("direction-->"+playHistory.direction);
+      thisAction="pickUp"
+    }
+
+
+
+
+    else{
       tileToWobble ='#'+ putDownParameters.fullId;
       wobble(tileToWobble);
       wobble(tileToWobble);
       speak("You cannot place a tile here, sorry");
       console.log("next action = "+thisAction);
+      return///????remove this
 
     }
     
@@ -653,32 +759,26 @@ var timerId = setInterval(function() {
   switch(wobbleCount){
    case 1:
    $(tileToWobble).css({'marginLeft' : "+=5px", 'marginRight':"-=5px"});//moves right
-   console.log('right');
    wobbleCount--;
    break;
    case 2:
    $(tileToWobble).css({'marginLeft' : "-=10px",'marginRight' : "+=10px"}); //moves left
-   console.log('left');
    wobbleCount--;
    break;
    case 3:
    $(tileToWobble).css({'marginLeft' : "+=10px", 'marginRight':"-=10px" });//moves right
-   console.log('left');
    wobbleCount--;
    break;
    case 4:
    $(tileToWobble).css({'marginLeft' : "-=10px", 'marginRight':"+=10px"}); //moves left
-   console.log('right');
    wobbleCount--;
    break;
    case 5:
    $(tileToWobble).css({'marginLeft' : "+=10px", 'marginRight':"-=10px" });//moves right
-   console.log('right');
    wobbleCount--;
    break;
    case 6:
    $(tileToWobble).css({'marginLeft' : "-=5px", 'marginRight':"+=5px"}); //moves right
-   console.log('left');
    wobbleCount--;
    break;
    default:
@@ -686,7 +786,6 @@ var timerId = setInterval(function() {
     }  
  
  
-  console.log(wobbleCount);
   if(wobbleCount ===0) {
     clearInterval(timerId);
   }
