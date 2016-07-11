@@ -116,7 +116,7 @@ var locationData = new Object();
     location.playerHorizontal
     location.multiplyer
 
-var speachSwitch ="off";
+var speachSwitch = false;
 var lettersInThisRound=0;
 var firstRowPlayed=0;
 var firstColumnPlayed=0;
@@ -246,44 +246,119 @@ $(function(){
   rackMaker();
 
   //Submit word to check validation with dictionary
+  $(".soundControls").click(function(){
+
+      $( ".soundControls").toggle();
+      speachSwitch = !speachSwitch
+    
+
+
+  });
+
+
+
 
   $("#submitWord").click(function(){
     console.log+('word checking');
     validWord = true;
     var endOfPlay=playHistory.locationsPlayed.length-1
-    if (playHistory.direction==='horizontal'){
-     
-      var firstColumnInWord= +(playHistory.locationsPlayed[1]).charAt(3)+playHistory.locationsPlayed[1].charAt(4);
-      var lastColumnInWord= +(playHistory.locationsPlayed[endOfPlay]).charAt(3)+playHistory.locationsPlayed[endOfPlay].charAt(4);
-      var lengthOfPlay= lastColumnInWord-firstColumnInWord;
-      var expectedLength=+playHistory.lettersPlayed.length-1;
-      lengthOfPlay=+lengthOfPlay+1;
-      console.log("lengthOfPlay"+lengthOfPlay);
-      console.log("expectedlength"+expectedLength);
-      if(lengthOfPlay!=expectedLength){
-        validWord=false;
-        console.log("horizontal fail");
-      }
-    }
+    var startCheckId = playHistory.locationsPlayed[1];
+    console.log("checking locations played"+startCheckId);
 
-    if (playHistory.direction==='vertical'){
+    var endCheckId=playHistory.locationsPlayed[playHistory.locationsPlayed.length-1];
+    console.log("checking locations played"+endCheckId);
+
+    var startCheckColumn=(startCheckId).charAt(3)+(startCheckId).charAt(4);
+    var endCheckColumn=(endCheckId).charAt(3)+(endCheckId).charAt(4);
+    var lengthToCheckColumn = ((+endCheckColumn)-(+startCheckColumn))+1;
+
+    var startCheckRow=(startCheckId).charAt(1)+(startCheckId).charAt(2);
+    var endCheckRow=(endCheckId).charAt(1)+(endCheckId).charAt(2);
+    var lengthToCheckRow = ((+endCheckRow)-(+startCheckRow))+1
+
+    console.log("length to check row"+ lengthToCheckRow)
+    console.log("startCheck row"+startCheckRow);
+    console.log("endCheck row"+endCheckRow);
+
+    if(playHistory.direction==='vertical'){
+      console.log("direction vertical");
+      console.log("startCheckColumn"+startCheckColumn);
+
+      for (i=0; i<lengthToCheckRow; i++){
+          if(i+(+startCheckRow)<10){
+            var rowValue="0"+(i+(+startCheckRow)).toString();
+            console.log("rowValues vertical"+rowValue+"i is "+i);
+          }else{
+            var rowValue=(i+(+startCheckRow)).toString();
+            console.log("rowValues vertical"+rowValue);
+          }
+        
+        var iDToCheck="#b"+rowValue+startCheckColumn+"_u";
+       
+        letterValidation=(($(iDToCheck).text()).charAt(0));
+        console.log ("VALIDATING LETTER"+letterValidation);
+        if(letterValidation==="" || letterValidation===null)validWord=false;
+        console.log("columnValue")+columnValue;
+        console.log("idToCheck v"+iDToCheck);
+      }
+      }
+
+      else{
     
-      var firstColumnInWord= +(playHistory.locationsPlayed[1]).charAt(1)+playHistory.locationsPlayed[1].charAt(2);
-      var lastColumnInWord= +(playHistory.locationsPlayed[endOfPlay]).charAt(1)+playHistory.locationsPlayed[endOfPlay].charAt(2);
-      var lengthOfPlay= lastColumnInWord-firstColumnInWord;
-      lengthOfPlay=+lengthOfPlay+1;
-      console.log("expectedlength"+(+playHistory.lettersPlayed.lengthOfPlay-1))
-      console.log("lengthOfPlay"+lengthOfPlay);
-      if(lengthOfPlay!=expectedLength){
-        validWord=false;
-        console.log("vertical fail");
+        for (i=0; i<lengthToCheckColumn; i++){
+            if(i+(+startCheckColumn)<10){
+              var columnValue="0"+(i+(+startCheckColumn)).toString();
+            }else{
+              var columnValue=(i+(+startCheckColumn)).toString();
+            }
+          console.log("Horizontal row check rowValue"+columnValue);
+          console.log("StartCheckColumn"+startCheckColumn+"row value"+columnValue);
+          var iDToCheck="#b"+startCheckRow+columnValue+"_u";
+          console.log("idToCheck"+iDToCheck);
+          letterValidation=(($(iDToCheck).text()).charAt(0));
+          if(letterValidation==="" || letterValidation===null)validWord=false;
+          console.log ("VALIDATING LETTER"+letterValidation);
+        }
       }
-   
-    }
 
-    var hasABlank=$.inArray( " ", playHistory.lettersPlayed );
-    console.log("has a blank"+hasABlank);
-    if(hasABlank>0) validWord=false;
+
+    // if (playHistory.direction==='horizontal'){
+     
+    //   var firstColumnInWord= +(playHistory.locationsPlayed[1]).charAt(3)+playHistory.locationsPlayed[1].charAt(4);
+    //   var lastColumnInWord= +(playHistory.locationsPlayed[endOfPlay]).charAt(3)+playHistory.locationsPlayed[endOfPlay].charAt(4);
+    //   var lengthOfPlay= lastColumnInWord-firstColumnInWord;
+    //   var expectedLength=+playHistory.lettersPlayed.length-1;
+    //   lengthOfPlay=+lengthOfPlay+1;
+    //   console.log("lengthOfPlay"+lengthOfPlay);
+    //   console.log("expectedlength"+expectedLength);
+    //   if(lengthOfPlay!=expectedLength){
+    //     validWord=false;
+    //     console.log("horizontal fail");
+    //   }
+    // }
+
+    // if (playHistory.direction==='vertical'){
+    
+    //   var firstColumnInWord= +(playHistory.locationsPlayed[1]).charAt(1)+playHistory.locationsPlayed[1].charAt(2);
+    //   var lastColumnInWord= +(playHistory.locationsPlayed[endOfPlay]).charAt(1)+playHistory.locationsPlayed[endOfPlay].charAt(2);
+    //   var lengthOfPlay= lastColumnInWord-firstColumnInWord;
+    //   var expectedLength=+playHistory.lettersPlayed.length-1
+    //   lengthOfPlay=+lengthOfPlay+1;
+    //   console.log("lengthOfPlayVertical"+lengthOfPlay);
+     
+    //   console.log("expectedlength"+(+playHistory.lettersPlayed.length-1))
+    //   console.log("lengthOfPlay"+lengthOfPlay);
+
+    //   if(lengthOfPlay!= expectedLength){
+    //     validWord=false;
+    //     console.log("vertical fail");
+    //   }
+   
+    // }
+
+    // var hasABlank=$.inArray( " ", playHistory.lettersPlayed );
+    // console.log("has a blank"+hasABlank);
+    // if(hasABlank>0) validWord=false;
 
 
     if (!validWord){
@@ -310,9 +385,64 @@ $(function(){
     if(validWord){
 
       wordInPlay=""
-      for(i=0; i<playHistory.lettersPlayed.length-1;i++){
-        wordInPlay=wordInPlay+playHistory.lettersPlayed[i+1];
-      }
+
+      var startCheckId = playHistory.locationsPlayed[1];
+      console.log("checking locations played"+startCheckId);
+
+      var endCheckId=playHistory.locationsPlayed[playHistory.locationsPlayed.length-1];
+      console.log("checking locations played"+endCheckId);
+
+      var startCheckColumn=(startCheckId).charAt(3)+(startCheckId).charAt(4);
+      var endCheckColumn=(endCheckId).charAt(3)+(endCheckId).charAt(4);
+      var lengthToCheckColumn = ((+endCheckColumn)-(+startCheckColumn))+1;
+
+      var startCheckRow=(startCheckId).charAt(1)+(startCheckId).charAt(2);
+      var endCheckRow=(endCheckId).charAt(1)+(endCheckId).charAt(2);
+      var lengthToCheckRow = ((+endCheckRow)-(+startCheckRow))+1
+
+      console.log("length to check row"+ lengthToCheckRow)
+      console.log("startCheck row"+startCheckRow);
+      console.log("endCheck row"+endCheckRow);
+
+      if(playHistory.direction==='vertical'){
+        console.log("direction vertical");
+        console.log("startCheckColumn"+startCheckColumn);
+
+        for (i=0; i<lengthToCheckRow; i++){
+            if(i+(+startCheckRow)<10){
+              var rowValue="0"+(i+(+startCheckRow)).toString();
+              console.log("rowValues vertical"+rowValue+"i is "+i);
+            }else{
+              var rowValue=(i+(+startCheckRow)).toString();
+              console.log("rowValues vertical"+rowValue);
+            }
+          
+          var iDToCheck="#b"+rowValue+startCheckColumn+"_u";
+         
+          wordInPlay=wordInPlay+(($(iDToCheck).text()).charAt(0));
+          console.log("columnValue")+columnValue;
+          console.log("idToCheck v"+iDToCheck);
+        }
+        }
+
+        else{
+     
+          for (i=0; i<lengthToCheckColumn; i++){
+              if(i+(+startCheckColumn)<10){
+                var columnValue="0"+(i+(+startCheckColumn)).toString();
+              }else{
+                var columnValue=(i+(+startCheckColumn)).toString();
+              }
+              console.log("Horizontal row check rowValue"+columnValue);
+              console.log("StartCheckColumn"+startCheckColumn+"row value"+columnValue);
+            var iDToCheck="#b"+startCheckRow+columnValue+"_u";
+            console.log("idToCheck"+iDToCheck);
+            wordInPlay=wordInPlay+(($(iDToCheck).text()).charAt(0));
+          }
+        }
+
+      
+
       console.log("wordInPlay = "+wordInPlay);
 
       checkDefinition(wordInPlay, function() {
@@ -766,15 +896,17 @@ function calculateLocationId(row, column){
 
     
 //speak 
-function speak(phraseToSay, callback) {
-  //alert('speak is called');
-  if(speachSwitch!="on"){
+function speak(phraseToSay, callbackspeak) {
+
+  console.log("speach switch is "+speachSwitch);
+  if(!speachSwitch){
+    console.log("didn't speak");
     return
   }
   if(phraseToSay.length >100){
     phraseToSay="Sorry, your browser prevents me reading really long definitions,  please read it for your self"//,,,,,,,,,put in script to display full definitions
   }
-
+  console.log("Tried to speak")
   var voice = new SpeechSynthesisUtterance();
   voice.text = phraseToSay;
   voice.lang = 'en-GB';
@@ -783,11 +915,11 @@ function speak(phraseToSay, callback) {
 
 
   voice.onend = function () {
-    if (callback) callback();
+    if (callbackspeak) callbackspeak();
   };
 
   voice.onerror = function (e) {
-    if (callback) callback(e);
+    if (callbackspeak) callbackspeak(e);
   };
 
   speechSynthesis.speak(voice);
@@ -814,7 +946,7 @@ function checkDefinition(wordInPlay, callback){
       
 
 
-      if(!!numberOfDefinitions){
+      if(numberOfDefinitions>0){
       var definitions=data.definitions;
       firstDefinition = definitions[0].definition;
       alert('There are '+numberOfDefinitions+'defintions of ' + wordInPlay + ' the first is '+firstDefinition);
