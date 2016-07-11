@@ -142,6 +142,9 @@ function boardMaker(){
     
     backGroundImg=""
 
+    playTrack = new Audio("audio/theme.m4a");
+    playTrack.play();
+
     if(boardMap[boardArrayIndex][0]===row&&boardMap[boardArrayIndex][1]===column ){
       wordLetterScore=boardMap[boardArrayIndex][2];
 
@@ -256,9 +259,16 @@ $(function(){
   });
 
 
+  $('#player1Skip').click(function(){
+    currentPlayerId=2;
+  });
+
+  $('#player2Skip').click(function(){
+    currentPlayerId=1;
+  });
 
 
-  $("#submitWord").click(function(){
+  $(".submitWord").click(function(){
     console.log+('word checking');
     validWord = true;
     var endOfPlay=playHistory.locationsPlayed.length-1
@@ -284,6 +294,10 @@ $(function(){
       console.log("direction vertical");
       console.log("startCheckColumn"+startCheckColumn);
 
+      /*do {
+          
+       while (letterValidation!="");
+*/
       for (i=0; i<lengthToCheckRow; i++){
           if(i+(+startCheckRow)<10){
             var rowValue="0"+(i+(+startCheckRow)).toString();
@@ -408,6 +422,7 @@ $(function(){
         console.log("direction vertical");
         console.log("startCheckColumn"+startCheckColumn);
 
+
         for (i=0; i<lengthToCheckRow; i++){
             if(i+(+startCheckRow)<10){
               var rowValue="0"+(i+(+startCheckRow)).toString();
@@ -446,14 +461,28 @@ $(function(){
       console.log("wordInPlay = "+wordInPlay);
 
       checkDefinition(wordInPlay, function() {
+        var currentWordMultiplyer=1;//multiplies total word value by one unless a word multiplyer is detected
         if(validWord){
           console.log('valid word from dictionary' + validWord)
           playHistory.totalLetterScore = 0;
           for(i=0; i<playHistory.scoresByLetter.length-1; i++){
             console.log("playHistor score length ="+playHistory.scoresByLetter.length+"array "+playHistory.scoresByLetter);
             playHistory.totalLetterScore+= +playHistory.scoresByLetter[i+1];
+
             console.log("Total Letter Score = "+playHistory.totalLetterScore);
-          }
+
+              if(playHistory.multiplyers[i+1]!=""&&playHistory.multiplyers[i+1].charAt(1)==="l"){
+                playHistory.totalMultiplyerScore+= +playHistory.scoresByLetter[i+1]*(+playHistory.multiplyers[i+1].charAt(0))
+                }
+              else{
+                playHistory.totalMultiplyerScore+= +playHistory.scoresByLetter[i+1];
+                }
+
+              if(playHistory.multiplyers[i+1]!="" &&playHistory.multiplyers[i+1].charAt(1)==="w"){
+                currentWordMultiplyer=currentWordMultiplyer*(+playHistory.multiplyers[i+1].charAt(0));
+               }
+            }
+            playHistory.totalMultiplyerScore=playHistory.totalMultiplyerScore*currentWordMultiplyer
 
           var remainingLetterCount = tileRacks[currentPlayerId-1].reduce(function(sum, elem) {
             if(!!elem) {
@@ -502,12 +531,16 @@ $(function(){
           wordRef++;
           lettersInThisRound=0;
           console.log("word ref" +wordRef);
-          scoreBoard[currentPlayerId-1]=+scoreBoard[currentPlayerId-1]+(+playHistory.totalLetterScore);
+          scoreBoard[currentPlayerId-1]=+scoreBoard[currentPlayerId-1]+(+playHistory.totalMultiplyerScore);
           console.log("scoreboard"+scoreBoard);
           var boardToUpdate='#scorePlayer'+(currentPlayerId).toString();
           console.log("board to update id"+boardToUpdate);
           $(boardToUpdate).text(scoreBoard[currentPlayerId-1]);
-          if(currentPlayerId===1)currentPlayerId=2;
+          if(currentPlayerId===1){
+            currentPlayerId=2;}
+            else{
+              currentPlayerId=1;
+            }
           console.log("currentPlayer "+currentPlayerId);
           }
 
@@ -904,7 +937,7 @@ function speak(phraseToSay, callbackspeak) {
     return
   }
   if(phraseToSay.length >100){
-    phraseToSay="Sorry, your browser prevents me reading really long definitions,  please read it for your self"//,,,,,,,,,put in script to display full definitions
+    phraseToSay="Sorry, the definition I have found is far too long,  please read it for your self"//,,,,,,,,,put in script to display full definitions
   }
   console.log("Tried to speak")
   var voice = new SpeechSynthesisUtterance();
@@ -967,8 +1000,17 @@ function checkDefinition(wordInPlay, callback){
     //error: function(err) { alert(err); },
 
     error:function (xhr, ajaxOptions, thrownError){
-      if(xhr.status==404) {
+      if(xhr.status===404) {
           alert(wordInPlay +" "+thrownError);
+          alert(wordInPlay+" is not a word");
+          phraseToSay=wordInPlay+" is not a word"
+          validWord = false;
+          speak(phraseToSay);
+          if(currentPlayerId===1){
+            currentPlayerId=2;}
+          else{
+            currentPlayerId=1;
+          }
       }
     },
 

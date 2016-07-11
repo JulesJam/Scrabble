@@ -16,25 +16,62 @@ body{
 
 }
 
-#game{
+#currentPlayer{
+ position: absolute;
+ top:350px;
+ left: 95px;
+
 
 }
 
+#rightSubmit{
+  position:absolute;
+  top:500px;
+  left:1220px;
+  width:90px;
+}
+
+#leftSubmit{
+  position:absolute;
+  top:485px;
+  left:90px;
+  width:90px;
+}
+
+
 #score1{
-  clear:right;
-  float:left;
-  margin-left:100px;
+  position:absolute;
+  top:100px;
+  left:60px;
+
 }
 
 #score2{
-  float:right;
-  margin-right: 100px;
+ position:absolute;
+ top:100px;
+ left:1200px;
+
+}
+
+#player1Skip{
+  position:absolute;
+  top:505px;
+  left:90px;
+  width:90px;
+
+}
+#player2Skip{
+  position:absolute;
+  top:520px;
+  left:1220px;
+  width:90px;
+
 }
 
 #gameBoard{
   height:780px;
   width:780px;
-  margin:100px auto;
+  margin:20px auto;
   clear:left;
  
 }
@@ -69,6 +106,8 @@ body{
   font-weight: 700;
   color:#3DB29A;
 }
+
+
 
 
 
