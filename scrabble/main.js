@@ -82,6 +82,7 @@ var scoresByLetter=[];
 var letterMultiplyers=[];
 var wordMultiplyers=[];
 var currentRnd = 1;
+var scoreBoard=[0,0];
 var playHistory = new Object();
     playHistory.roundNumber=0;
     playHistory.playerId=1
@@ -249,9 +250,9 @@ $(function(){
   $("#submitWord").click(function(){
     console.log+('word checking');
     validWord = true;
-
+    var endOfPlay=playHistory.locationsPlayed.length-1
     if (playHistory.direction==='horizontal'){
-      var endOfPlay=playHistory.locationsPlayed.length-1
+     
       var firstColumnInWord= +(playHistory.locationsPlayed[1]).charAt(3)+playHistory.locationsPlayed[1].charAt(4);
       var lastColumnInWord= +(playHistory.locationsPlayed[endOfPlay]).charAt(3)+playHistory.locationsPlayed[endOfPlay].charAt(4);
       var lengthOfPlay= lastColumnInWord-firstColumnInWord;
@@ -266,7 +267,7 @@ $(function(){
     }
 
     if (playHistory.direction==='vertical'){
-      var endOfPlay=playHistory.locationsPlayed.length-1
+    
       var firstColumnInWord= +(playHistory.locationsPlayed[1]).charAt(1)+playHistory.locationsPlayed[1].charAt(2);
       var lastColumnInWord= +(playHistory.locationsPlayed[endOfPlay]).charAt(1)+playHistory.locationsPlayed[endOfPlay].charAt(2);
       var lengthOfPlay= lastColumnInWord-firstColumnInWord;
@@ -307,11 +308,13 @@ $(function(){
     //
 
     if(validWord){
+
       wordInPlay=""
       for(i=0; i<playHistory.lettersPlayed.length-1;i++){
         wordInPlay=wordInPlay+playHistory.lettersPlayed[i+1];
       }
       console.log("wordInPlay = "+wordInPlay);
+
       checkDefinition(wordInPlay, function() {
         if(validWord){
           console.log('valid word from dictionary' + validWord)
@@ -332,20 +335,59 @@ $(function(){
 
           console.log(remainingLetterCount + " remaining");
 
-          // for(i=0; i<tileRacks[currentPlayerId-1].length; i++){
-          //   alert(tileRacks[currentPlayerId-1]);
-          //   if(tileRacks[currentPlayerId-1].length<1){
-          //     alert("winner");
-          //   }else{
-          //     alert("rack length "+tileRacks[currentPlayerId-1].length);
-          //   }
-          // }
-        }
-      });
+          if (lettersRemainingInStack<1){
+            alert('No letters left')
+          }
+          else{
+            for(var i=0; i<7; i++){
+
+              rackItemId = "r010"+(i+1)+"_u_p"+(currentPlayerId);
+
+                if(tileRacks[currentPlayerId-1][i]===""){
+                console.log("tile value before update = "+tileRacks[currentPlayerId-1][i]+" id "+rackItemId);
+                //pickletter for tile
+                rackLetter=pickLetter();
+                console.log(rackLetter);
+                $('#'+rackItemId).html('<div class = "tileValue">'+rackLetter.toUpperCase()+'</div><div class="score">'+letterValues[rackLetter]+'</div>');
+                  //'<div class = "location" id = '+rackItemId+'></div>');
+               
+                //putLetter In Rack Array
+                tileRacks[currentPlayerId-1][i]=rackLetter.toUpperCase();
+
+               
+                lettersRemainingInStack--;
+                console.log("letters In Stack"+lettersRemainingInStack)
+               
+               
+              
+
+              
+                }
+              //add the letter and the letter value to the tileHTML
+             
+              };
+            
+
+          }
+          wordRef++;
+          lettersInThisRound=0;
+          console.log("word ref" +wordRef);
+          scoreBoard[currentPlayerId-1]=+scoreBoard[currentPlayerId-1]+(+playHistory.totalLetterScore);
+          console.log("scoreboard"+scoreBoard);
+          var boardToUpdate='#scorePlayer'+(currentPlayerId).toString();
+          console.log("board to update id"+boardToUpdate);
+          $(boardToUpdate).text(scoreBoard[currentPlayerId-1]);
+          if(currentPlayerId===1)currentPlayerId=2;
+          console.log("currentPlayer "+currentPlayerId);
+          }
+
+       
+        });
 
     }
 
-    
+
+});    
 
 
 
@@ -357,7 +399,7 @@ $(function(){
       /*wordInPlay=wordInPlay.toLowerCase();
       checkDefinition(wordInPlay);*/
 
-  });
+  
 
 
 

@@ -20,13 +20,13 @@ body{
 
 }
 
-#scorePlayer1{
+#score1{
   clear:right;
   float:left;
   margin-left:100px;
 }
 
-#scorePlayer2{
+#score2{
   float:right;
   margin-right: 100px;
 }
