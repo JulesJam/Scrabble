@@ -1,10 +1,8 @@
-//Constructor to draw board
-// if ('speechSynthesis' in window) {
-//     alert('I can talk'); 
-// }
-//NEED TO STOP ACCESS TO OTHER  PLAYERS TRAY - use current player and rack player id
-//Jobs to do - commit word and score - basic
-//letter refil
+
+//see line 299 for next update work
+
+// Need to make lay our reponsive
+
 //floating letter
 var fullLetterStack = ['e','e','e','e','e','e','e','e','e','e','e','e','a','a','a','a','a','a','a','a','a','i','i','i','i','i','i','i','i','i','i','o','o','o','o','o','o','o','o','n','n','n','n','n','n','n','r','r','r','r','r','r','t','t','t','t','t','t','t','l','l','l','l','s','s','s','s','u','u','u','u','d','d','d','d','g','g','g','b','b','c','c','m','m','p','p','f','f','h','h','v','v','w','w','y','y','k','j','x','q','z','blank','blank'];
 
@@ -123,7 +121,7 @@ var firstColumnPlayed=0;
 var firstLetterInWord="";
 var validWord= false;
 
-
+//Constructor to draw board
 function boardMaker(){
   var j=0;
   var row=0;
@@ -294,22 +292,44 @@ $(function(){
 
     var startCheckRow=(startCheckId).charAt(1)+(startCheckId).charAt(2);
 
-    //new code 127
+    var endCheckRow=(endCheckId).charAt(1)+(endCheckId).charAt(2);
+
+    //<<<<<<<<<<<<<<<THIS IS CODE TO WORK ON TO COMPLETE THE BELOW CHEK AND LEFT RIGHT CHECK
+    //Then remove word accumulator below as the validtaion can do that
+    //Also alow letter anywhere on secon play but then have to be in same plane on 
+    //subsequent plays can be before first peiec but need to update first position 
+    //Once word is validated need to add to play history
+    //if invalid word need to remove pieces back to rack and decide if skip ago is needed
+    //Lockletters after validation
+    //
     if(playHistory.direction==="vertical"){
       console.log('<<<<<<<<<<<<<Checking character above>>>>>>>>>>>>>>.');
       aboveCheck=(+(startCheckRow))-1;
+      belowCheck=(+(endCheckRow))+1
       console.log("aboveCheck   "+aboveCheck);
       if(aboveCheck<10){
         aboveCheck="0"+aboveCheck;
       };
+      if(belowCheck<10){
+        belowCheck="0"+aboveCheck;
+      };
       aboveId="#b"+aboveCheck+startCheckColumn+"_u";
+      belowId="#b"+belowCheck+startCheckColumn+"_u";
       console.log("above.id "+aboveId);
-      if($(aboveId).text()!= ""/*&&($(aboveId).text().charAt(0)!=="2"||aboveId).text().charAt(0)!=="3"*/){
+      if($(aboveId).text()!= ""&&($(aboveId).text()).charAt(0)!="2"&&($(aboveId).text()).charAt(0)!="3"){
+        console.log("above text at 0 ="+($(aboveId).text()).charAt(0));
         startCheckRow=((+startCheckRow)-1)
         console.log('startCheckColumn Now '+startCheckRow);
       }
       else{
         console.log('above check failed start check column'+startCheckRow);
+      }
+      if($(belowId).text()!= ""&&($(belowId).text()!="2"||$(belowId).text()!="3")){
+        startCheckRow=((+startCheckRow)-1)
+        console.log('startCheckColumn Now '+startCheckRow);
+      }
+      else{
+        console.log('below check failed start check column'+startCheckRow);
       }
     };
 
@@ -317,7 +337,7 @@ $(function(){
     var endCheckColumn=(endCheckId).charAt(3)+(endCheckId).charAt(4);
     var lengthToCheckColumn = ((+endCheckColumn)-(+startCheckColumn))+1;
 
-    var endCheckRow=(endCheckId).charAt(1)+(endCheckId).charAt(2);
+    
     var lengthToCheckRow = ((+endCheckRow)-(+startCheckRow))+1
 
     console.log("length to check row"+ lengthToCheckRow)
