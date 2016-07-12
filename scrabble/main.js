@@ -142,8 +142,8 @@ function boardMaker(){
     
     backGroundImg=""
 
-    playTrack = new Audio("audio/theme.m4a");
-    playTrack.play();
+    // playTrack = new Audio("audio/theme.m4a");
+    // playTrack.play();
 
     if(boardMap[boardArrayIndex][0]===row&&boardMap[boardArrayIndex][1]===column ){
       wordLetterScore=boardMap[boardArrayIndex][2];
@@ -260,11 +260,20 @@ $(function(){
 
 
   $('#player1Skip').click(function(){
+    switchPlayer();
+    $('#currentPlayer'+currentPlayerId).text("")
     currentPlayerId=2;
+    playHistory.currentPlayerId=2;
+    $('#currentPlayer'+currentPlayerId).text("Round "+currentRnd+" Current Player "+currentPlayerId);
   });
 
   $('#player2Skip').click(function(){
+    switchPlayer();
+    $('#currentPlayer'+currentPlayerId).text("")
+    currentRnd++;
     currentPlayerId=1;
+    playHistory.currentPlayerId=1;
+    $('#currentPlayer'+currentPlayerId).text("Round "+currentRnd+" Current Player "+currentPlayerId);
   });
 
 
@@ -537,9 +546,22 @@ $(function(){
           console.log("board to update id"+boardToUpdate);
           $(boardToUpdate).text(scoreBoard[currentPlayerId-1]);
           if(currentPlayerId===1){
-            currentPlayerId=2;}
-            else{
+            switchPlayer();
+            console.log("<<<<<Switch Player>>>>>>");
+            $("#currentPlayer"+currentPlayerId).text("");
+            currentPlayerId=2;
+            playHistory.currentPlayerId=2;
+            $("#currentPlayer"+currentPlayerId).text("Round "+currentRnd+"Current Player "+currentPlayerId);
+            }
+             else{
+              console.log("<<<<<Switch Player>>>>>>");
+              currentRnd++;
+              switchPlayer();
+              $("#currentPlayer"+currentPlayerId).text("");
               currentPlayerId=1;
+              playHistory.currentPlayerId=1;
+              $("#currentPlayer"+currentPlayerId).text("Round "+currentRnd+"Current Player "+currentPlayerId);
+              
             }
           console.log("currentPlayer "+currentPlayerId);
           }
@@ -886,6 +908,26 @@ $(function(){
       }
   });
 });
+
+function switchPlayer(){
+  console.log("player switched")
+  roundHistory[currentPlayerId][currentRnd]=playHistory;
+  playHistory.roundNumber=0;
+  playHistory.playerId=0;
+  playHistory.wordRef=0;
+  playHistory.firstLetterInWord="";
+  playHistory.firstLocationInWord=0;
+  playHistory.locationsPlayed=[];
+  playHistory.lettersPlayed=[];
+  playHistory.scoresByLetter=[];
+  playHistory.multiplyers=[];
+  playHistory.direction="";
+  playHistory.totalLetterScore=0;
+  playHistory.totalMultiplyerScore=0;
+  console.log(playHistory);
+
+
+}
 
 
 

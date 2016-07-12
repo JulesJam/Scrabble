@@ -7,6 +7,8 @@ body{
   background: -moz-radial-gradient(circle, rgba(75, 238, 197, 1.0), rgba(34, 161, 134, 1.0), rgba(30, 141, 118, 1.0)); 
   background: radial-gradient(circle, rgba(75, 238, 197, 1.0), rgba(34, 161, 134, 1.0), rgba(30, 141, 118, 1.0)); 
   position:relative;
+  font-family: 'lato','sans-serif';
+  font-size:16px;
 }
 .soundControls{
   float:right;
@@ -16,10 +18,19 @@ body{
 
 }
 
-#currentPlayer{
+#currentPlayer1{
  position: absolute;
  top:350px;
- left: 95px;
+ left: 70px;
+
+
+}
+
+
+#currentPlayer2{
+ position: absolute;
+ top:350px;
+ left: 1175px;
 
 
 }
@@ -40,9 +51,10 @@ body{
 
 
 #score1{
+
   position:absolute;
   top:100px;
-  left:60px;
+  left:95px;
 
 }
 
