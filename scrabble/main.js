@@ -280,6 +280,7 @@ $(function(){
   $(".submitWord").click(function(){
     console.log+('word checking');
     validWord = true;
+    wordInPlay="";
     var endOfPlay=playHistory.locationsPlayed.length-1
     var startCheckId = playHistory.locationsPlayed[1];
    
@@ -297,9 +298,14 @@ $(function(){
     if(playHistory.direction==="vertical"){
       console.log('<<<<<<<<<<<<<Checking character above>>>>>>>>>>>>>>.');
       aboveCheck=(+(startCheckRow))-1;
-      aboveId="#b"+aboveCheck+"_u";
+      console.log("aboveCheck   "+aboveCheck);
+      if(aboveCheck<10){
+        aboveCheck="0"+aboveCheck;
+      };
+      aboveId="#b"+aboveCheck+startCheckColumn+"_u";
+      console.log("above.id "+aboveId);
       if($(aboveId).text()!= ""/*&&($(aboveId).text().charAt(0)!=="2"||aboveId).text().charAt(0)!=="3"*/){
-        startCheckRow=((+startCheckRow)-1).toString;
+        startCheckRow=((+startCheckRow)-1)
         console.log('startCheckColumn Now '+startCheckRow);
       }
       else{
@@ -339,7 +345,11 @@ $(function(){
        
         letterValidation=(($(iDToCheck).text()).charAt(0));
         console.log ("VALIDATING LETTER"+letterValidation);
-        if(letterValidation==="" || letterValidation===null)validWord=false;
+        if(letterValidation==="" || letterValidation===null){
+          validWord=false;}
+          else{
+            wordInPlay=wordInPlay+letterValidation;
+          }
         console.log("columnValue")+columnValue;
         console.log("idToCheck v"+iDToCheck);
       }
@@ -426,7 +436,7 @@ $(function(){
 
     if(validWord){
 
-      wordInPlay=""
+      if(!wordInPlay){
 
       var startCheckId = playHistory.locationsPlayed[1];
       console.log("checking locations played"+startCheckId);
@@ -487,7 +497,7 @@ $(function(){
       
 
       console.log("wordInPlay = "+wordInPlay);
-
+    }
       checkDefinition(wordInPlay, function() {
         var currentWordMultiplyer=1;//multiplies total word value by one unless a word multiplyer is detected
         if(validWord){
