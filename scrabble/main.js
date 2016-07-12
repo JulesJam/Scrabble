@@ -162,7 +162,7 @@ function boardMaker(){
         locationColor = 'rgba(107, 205, 253, 1.0)';
         break;
         case (boardMap[boardArrayIndex][2].charAt(1)===''):
-        locationColor = 'rgba(249, 154, 249, .9)'; backGroundImg = '; background-image: url(images/star.png); background-size:cover; background-repeat:   no-repeat;'
+        locationColor = 'rgba(249, 154, 249, .9)'; backGroundImg = '; background-image: url(images/star.png); background-size:cover; background-repeat:   no-repeat; color:rgba(255,255,255,1)';
       //background-position: center center; '
         break;
         default: locationColor='rgba(255, 254, 231, 1.0)';backGroundImg="";
@@ -551,7 +551,7 @@ $(function(){
             $("#currentPlayer"+currentPlayerId).text("");
             currentPlayerId=2;
             playHistory.currentPlayerId=2;
-            $("#currentPlayer"+currentPlayerId).text("Round "+currentRnd+"Current Player "+currentPlayerId);
+            $("#currentPlayer"+currentPlayerId).text("Round "+currentRnd+" Current Player "+currentPlayerId);
             }
              else{
               console.log("<<<<<Switch Player>>>>>>");
@@ -560,7 +560,7 @@ $(function(){
               $("#currentPlayer"+currentPlayerId).text("");
               currentPlayerId=1;
               playHistory.currentPlayerId=1;
-              $("#currentPlayer"+currentPlayerId).text("Round "+currentRnd+"Current Player "+currentPlayerId);
+              $("#currentPlayer"+currentPlayerId).text("Round "+currentRnd+" Current Player "+currentPlayerId);
               
             }
           console.log("currentPlayer "+currentPlayerId);
