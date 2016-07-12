@@ -142,8 +142,8 @@ function boardMaker(){
     
     backGroundImg=""
 
-    // playTrack = new Audio("audio/theme.m4a");
-    // playTrack.play();
+    playTrack = new Audio("audio/theme.m4a");
+    playTrack.play();
 
     if(boardMap[boardArrayIndex][0]===row&&boardMap[boardArrayIndex][1]===column ){
       wordLetterScore=boardMap[boardArrayIndex][2];
@@ -162,7 +162,7 @@ function boardMaker(){
         locationColor = 'rgba(107, 205, 253, 1.0)';
         break;
         case (boardMap[boardArrayIndex][2].charAt(1)===''):
-        locationColor = 'rgba(249, 154, 249, .9)'; backGroundImg = '; background-image: url(images/star.png); background-size:cover; background-repeat:   no-repeat; color:rgba(255,255,255,1)';
+        locationColor = 'rgba(249, 154, 249, .9)'; backGroundImg = '; background-image: url(images/star.png); background-size:cover; background-repeat:   no-repeat; color:rgba(255,255,255,1)';  playHistory.currentPlayerId=2;
       //background-position: center center; '
         break;
         default: locationColor='rgba(255, 254, 231, 1.0)';backGroundImg="";
@@ -282,16 +282,35 @@ $(function(){
     validWord = true;
     var endOfPlay=playHistory.locationsPlayed.length-1
     var startCheckId = playHistory.locationsPlayed[1];
+   
+
     console.log("checking locations played"+startCheckId);
 
     var endCheckId=playHistory.locationsPlayed[playHistory.locationsPlayed.length-1];
     console.log("checking locations played"+endCheckId);
 
     var startCheckColumn=(startCheckId).charAt(3)+(startCheckId).charAt(4);
+
+    var startCheckRow=(startCheckId).charAt(1)+(startCheckId).charAt(2);
+
+    //new code 127
+    if(playHistory.direction==="vertical"){
+      console.log('<<<<<<<<<<<<<Checking character above>>>>>>>>>>>>>>.');
+      aboveCheck=(+(startCheckRow))-1;
+      aboveId="#b"+aboveCheck+"_u";
+      if($(aboveId).text()!= ""/*&&($(aboveId).text().charAt(0)!=="2"||aboveId).text().charAt(0)!=="3"*/){
+        startCheckRow=((+startCheckRow)-1).toString;
+        console.log('startCheckColumn Now '+startCheckRow);
+      }
+      else{
+        console.log('above check failed start check column'+startCheckRow);
+      }
+    };
+
+
     var endCheckColumn=(endCheckId).charAt(3)+(endCheckId).charAt(4);
     var lengthToCheckColumn = ((+endCheckColumn)-(+startCheckColumn))+1;
 
-    var startCheckRow=(startCheckId).charAt(1)+(startCheckId).charAt(2);
     var endCheckRow=(endCheckId).charAt(1)+(endCheckId).charAt(2);
     var lengthToCheckRow = ((+endCheckRow)-(+startCheckRow))+1
 
@@ -684,7 +703,8 @@ $(function(){
 
     else if (thisAction==="pickUp" && pickUpParameters.rackOrBoard==="r"&&+pickUpParameters.playerId===+currentPlayerId){
       //,,,,,,,need an iftstament to check if picking up from grid what the fill should be i.e. 3l 2l 3w 2w etc
-      speak("You have selected "+pickUpParameters.letter)
+      //speak("You have selected "+pickUpParameters.letter) - turned of manuall as too 
+      //annoying
       var playerIndex=(+pickUpParameters.playerId-1);
       var tileIndex=((+pickUpParameters.column-1));
       console.log("rack array "+tileRacks[playerIndex]+" "+playerIndex+' tileIndex '+tileIndex);
