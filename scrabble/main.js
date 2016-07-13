@@ -210,7 +210,7 @@ function rackMaker(){
       rackBaseLocationLeft=18;
     }
     else{
-      rackBaseLocationTop=($(document).height()*(1/numberPlayers)-(i*44));
+      rackBaseLocationTop=($(document).height()*(1/numberPlayers)-44);
       rackBaseLocationLeft=($(document).width()-328);
     };
 
