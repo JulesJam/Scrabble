@@ -140,7 +140,7 @@ function boardMaker(){
     
     backGroundImg=""
 
-    playTrack = new Audio("audio/theme.m4a");
+    playTrack = new Audio("audio/theme.wav");
     playTrack.play();
 
     if(boardMap[boardArrayIndex][0]===row&&boardMap[boardArrayIndex][1]===column ){
