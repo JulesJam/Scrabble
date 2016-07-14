@@ -131,6 +131,10 @@ function boardMaker(){
   var locationColor='rgba(255, 254, 231, .9)';
   var backGroundImg=""
 
+
+  playTrack = new Audio("audio/theme.wav");
+  playTrack.play();
+  
   for(var i=0; i<225; i++){
     locationColor='rgba(255, 254, 231, .9)';
     if(i>112){j=250-i}else{j=i};
@@ -140,8 +144,7 @@ function boardMaker(){
     
     backGroundImg=""
 
-    playTrack = new Audio("audio/theme.wav");
-    playTrack.play();
+   
 
     if(boardMap[boardArrayIndex][0]===row&&boardMap[boardArrayIndex][1]===column ){
       wordLetterScore=boardMap[boardArrayIndex][2];
